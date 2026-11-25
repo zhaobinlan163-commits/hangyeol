@@ -18,6 +18,8 @@
   body {
     background-color: #f7f8fa;
     color: #0f172a;
+    /* 手机上避免个别长按钮把页面撑出横向滚动 */
+    overflow-x: hidden;
   }
 
   h1, h2, h3 {

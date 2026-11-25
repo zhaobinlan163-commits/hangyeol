@@ -111,9 +111,11 @@ export default function App() {
       {!aiConfigured && (
         <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3">
           <div className="px-3.5 py-2.5 bg-amber-50 border border-amber-200 rounded-xl flex flex-wrap items-center justify-between gap-2 text-xs text-amber-900">
-            <span className="flex items-center gap-2">
+            <span className="flex items-center gap-2 min-w-0">
               <KeyRound className="w-3.5 h-3.5 shrink-0 text-amber-700" aria-hidden="true" />
-              还差一把 DeepSeek API Key：填上之后 AI 陪练、发音纠错、语法造句、视频解析才能用。
+              <span className="break-words">
+                还差一把 DeepSeek API Key：填上之后 AI 陪练、发音纠错、语法造句、视频解析才能用。
+              </span>
             </span>
             <button
               type="button"

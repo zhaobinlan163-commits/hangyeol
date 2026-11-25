@@ -493,7 +493,7 @@ export function VocabGardenView({
             }`}
           >
             <Sprout className="w-4 h-4 text-emerald-600" aria-hidden="true" />
-            每日背词工作台 ({cards.length} 词)
+            每日背词 ({cards.length})
           </button>
           <button
             type="button"
@@ -507,7 +507,7 @@ export function VocabGardenView({
             }`}
           >
             <BookOpen className="w-4 h-4 text-blue-700" aria-hidden="true" />
-            TOPIK 官方大纲词书 (4,056 词)
+            官方词书 (4,056)
           </button>
         </div>
 

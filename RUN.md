@@ -184,7 +184,17 @@ React + Vite 这套代码搬不过去。三条路：
 > 这套设计的取舍：不做账号系统（免得朋友要注册），用「浏览器本地 + 可选存档码」
 > 换取零门槛。真要做多端实时同步，就需要账号 + 数据库了。
 
-## 六、已经部署到公网（临时隧道，可直接访问）
+## 六、已经部署到公网
+
+**正式地址（Render 免费档，电脑可以关机）：https://hangyeol.onrender.com**
+
+- 仓库：https://github.com/zhaobinlan163-commits/hangyeol（`main` 分支自动部署）
+- 部署配置：仓库根目录 `render.yaml`（Node 22、singapore、免费档、健康检查 `/api/health`）
+- 构建：`npm install --include=dev && npm run build`（vite 打包前端 + esbuild 打包 `server.mjs`）
+- 启动：`NODE_ENV=production node server.mjs`
+- 免费实例闲置 15 分钟休眠，首次访问约 50 秒冷启动；`data/progress` 云存档在重新部署后会清空
+
+### 备用：本机临时隧道（电脑开着时更快）
 
 **https://generated-wine-bin-democracy.trycloudflare.com**
 

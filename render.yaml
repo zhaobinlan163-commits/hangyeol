@@ -5,16 +5,15 @@ services:
     plan: free
     region: singapore
     branch: main
-    # 必须带 --include=dev：构建需要 vite（devDependency）
+    # 必须带 --include=dev：构建需要 vite 与 esbuild（devDependency）
     buildCommand: npm install --include=dev && npm run build
-    # Render 会注入 PORT；这里显式声明 NODE_ENV=production，
-    # server.ts 在 production 下才会读 process.env.PORT 并托管 dist/
-    startCommand: NODE_ENV=production node server.ts
+    # 构建产物 server.mjs 是打包后的 ESM，不依赖 Node 的 TS 运行时
+    startCommand: NODE_ENV=production node server.mjs
     healthCheckPath: /api/health
     autoDeploy: true
     envVars:
       - key: NODE_VERSION
-        value: "24"
+        value: "22"
       - key: DEEPSEEK_BASE_URL
         value: https://api.deepseek.com
       - key: DEEPSEEK_MODEL

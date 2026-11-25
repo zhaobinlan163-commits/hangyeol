@@ -14,5 +14,5 @@ ENV NODE_ENV=production
 ENV PORT=3000
 EXPOSE 3000
 
-# Node 24 原生支持直接运行 TypeScript（server.ts）
-CMD ["node", "server.ts"]
+# Node 22+ 即可：server.ts 在构建阶段已被 esbuild 打成 server.mjs
+CMD ["node", "server.mjs"]

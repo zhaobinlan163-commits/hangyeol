@@ -1,48 +1,49 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  applyProgress,
   downloadProgress,
   getProgressCode,
-  hasLocalLearningData,
   isAutoSyncEnabled,
+  markSynced,
+  mergeProgress,
   uploadProgress,
 } from '../utils/progressSync';
 
+const RESTORE_FLAG = 'hangyeol_auto_restored_v1';
+
 /**
- * 自动同步：设置过「云存档码」后，学习数据变化会在后台静默上传；
- * 换设备首次进入且本地为空时，自动拉取云端存档。
- *
- * version 是外部传入的「数据指纹」，变化才会触发上传（避免每秒都发）。
+ * 自动同步：
+ * - 页面打开时把云端数据「合并」进本地（打卡日历按较大值合并，不会覆盖本机时长）
+ * - 设置过存档码后，数据变化约 8 秒后静默上传
  */
 export function useAutoSync(version: string) {
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
-  const [syncError, setSyncError] = useState<string | null>(null);
   const timerRef = useRef<number | null>(null);
   const restoredRef = useRef(false);
 
-  // 新设备：本地没数据就自动从云端恢复一次
+  // 打开页面时合并云端存档（每个会话只做一次）
   useEffect(() => {
     if (restoredRef.current) return;
     restoredRef.current = true;
 
     const code = getProgressCode();
-    if (!code || !isAutoSyncEnabled() || hasLocalLearningData()) return;
+    if (!code || !isAutoSyncEnabled()) return;
+    try {
+      if (window.sessionStorage.getItem(RESTORE_FLAG) === '1') return;
+      window.sessionStorage.setItem(RESTORE_FLAG, '1');
+    } catch {
+      // ignore
+    }
 
-    let cancelled = false;
     void (async () => {
       try {
         const res = await downloadProgress(code);
-        if (cancelled || !res.exists || !res.data) return;
-        const count = applyProgress(res.data);
-        if (count > 0) window.location.reload();
+        if (!res.exists || !res.data) return;
+        const changed = mergeProgress(res.data);
+        if (changed > 0) window.location.reload();
       } catch {
-        // 忽略：下次有变化再同步
+        // 网络异常就等下一条数据再同步
       }
     })();
-
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   // 数据变化后 8 秒静默上传
@@ -56,13 +57,13 @@ export function useAutoSync(version: string) {
       uploadProgress(code)
         .then((r) => {
           if (r.savedAt) {
+            markSynced(r.savedAt);
             setLastSyncedAt(r.savedAt);
-            setSyncError(null);
-          } else if (r.error) {
-            setSyncError(r.error);
           }
         })
-        .catch(() => setSyncError('网络异常'));
+        .catch(() => {
+          // 静默失败，下次变化再试
+        });
     }, 8000);
 
     return () => {
@@ -70,5 +71,5 @@ export function useAutoSync(version: string) {
     };
   }, [version]);
 
-  return { lastSyncedAt, syncError };
+  return { lastSyncedAt };
 }

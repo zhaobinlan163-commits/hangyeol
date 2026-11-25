@@ -23,6 +23,7 @@ import {
   applyProgress,
   collectProgress,
   getProgressCode,
+  getLastSync,
 } from '../utils/progressSync';
 
 type StatusTone = 'idle' | 'busy' | 'ok' | 'error';
@@ -45,6 +46,7 @@ export function AiSettingsDialog({ open, onClose, onSaved }: AiSettingsDialogPro
     text: '',
   });
   const [progressCode, setProgressCode] = useState('');
+  const [lastSync, setLastSync] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -54,6 +56,7 @@ export function AiSettingsDialog({ open, onClose, onSaved }: AiSettingsDialogPro
     setProgressStatus({ tone: 'idle', text: '' });
     try {
       setProgressCode(getProgressCode());
+      setLastSync(getLastSync());
     } catch {
       setProgressCode('');
     }
@@ -393,7 +396,16 @@ export function AiSettingsDialog({ open, onClose, onSaved }: AiSettingsDialogPro
                 <input
                   type="text"
                   value={progressCode}
-                  onChange={(e) => setProgressCode(e.target.value)}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    setProgressCode(next);
+                    // 边输入边保存，自动同步立刻生效，不必先点上传
+                    try {
+                      window.localStorage.setItem('hangyeol_progress_code_v1', next.trim());
+                    } catch {
+                      // ignore
+                    }
+                  }}
                   placeholder="例如 mimi-2026"
                   className="mt-1 w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500"
                 />
@@ -415,7 +427,11 @@ export function AiSettingsDialog({ open, onClose, onSaved }: AiSettingsDialogPro
                 </button>
               </div>
               <p className="text-[11px] leading-relaxed text-slate-500">
-                填好存档码后会自动同步（约 8 秒一次），包含词表、进度、打卡日历与每日练习时长；知道存档码的人可读写。
+                {progressCode.trim() ? '自动同步已开启（约 8 秒）' : '填入存档码后自动同步'}
+                {lastSync
+                  ? ` · 上次 ${new Date(lastSync).toLocaleTimeString('zh-CN', { hour12: false })}`
+                  : ''}
+                ｜含词表、进度、打卡日历与每日练习时长
               </p>
             </div>
 

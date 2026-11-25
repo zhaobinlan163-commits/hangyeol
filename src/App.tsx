@@ -5,6 +5,7 @@ import { hasUserApiKey } from './utils/api';
 import { useKoreanAudio } from './hooks/useKoreanAudio';
 import { useLearningStore } from './hooks/useLearningStore';
 import { useNotesStore } from './hooks/useNotesStore';
+import { useAutoSync } from './hooks/useAutoSync';
 import { computeGardenSummary } from './utils/srs';
 import { TopBar } from './components/TopBar';
 import { AiSettingsDialog } from './components/AiSettingsDialog';
@@ -61,6 +62,36 @@ export default function App() {
   } = useKoreanAudio();
 
   const gardenSummary = useMemo(() => computeGardenSummary(vocabCards), [vocabCards]);
+
+  // 云端自动同步：指纹变化后静默上传（含打卡日历与每日练习时长）
+  const syncVersion = useMemo(
+    () =>
+      [
+        vocabCards.length,
+        stats.xp,
+        stats.todayReviewed,
+        Math.floor(todayCheckinSeconds / 60),
+        Object.keys(checkins).length,
+        chatMessages.length,
+        dailyPlan.drawnCardIds.length,
+        dailyPlan.stage1ConfirmedIds.length,
+        dailyPlan.stage3PassedIds.length,
+        notes.length,
+      ].join('|'),
+    [
+      vocabCards.length,
+      stats.xp,
+      stats.todayReviewed,
+      todayCheckinSeconds,
+      checkins,
+      chatMessages.length,
+      dailyPlan.drawnCardIds.length,
+      dailyPlan.stage1ConfirmedIds.length,
+      dailyPlan.stage3PassedIds.length,
+      notes.length,
+    ]
+  );
+  useAutoSync(syncVersion);
 
   const handleStartDailyReview = () => {
     setActiveTab('vocab');

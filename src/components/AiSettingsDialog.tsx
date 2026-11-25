@@ -19,17 +19,11 @@ import {
   saveAiConfig,
   type AiConfig,
 } from '../utils/api';
-
-const PROGRESS_KEYS = [
-  'hangyeol_vocab_v1',
-  'hangyeol_stats_v2',
-  'hangyeol_chat_v1',
-  'hangyeol_daily_plan_v1',
-  'hangyeol_checkin_v1',
-  'hangyeol_notes_v1',
-] as const;
-
-const PROGRESS_CODE_KEY = 'hangyeol_progress_code_v1';
+import {
+  applyProgress,
+  collectProgress,
+  getProgressCode,
+} from '../utils/progressSync';
 
 type StatusTone = 'idle' | 'busy' | 'ok' | 'error';
 
@@ -37,36 +31,6 @@ interface AiSettingsDialogProps {
   open: boolean;
   onClose: () => void;
   onSaved?: () => void;
-}
-
-function collectProgress(): Record<string, unknown> {
-  const payload: Record<string, unknown> = {
-    exportedAt: new Date().toISOString(),
-    app: 'hangyeol',
-    version: 1,
-  };
-  for (const key of PROGRESS_KEYS) {
-    const raw = window.localStorage.getItem(key);
-    if (raw) {
-      try {
-        payload[key] = JSON.parse(raw);
-      } catch {
-        // Skip corrupted entries
-      }
-    }
-  }
-  return payload;
-}
-
-function applyProgress(payload: Record<string, unknown>): number {
-  let restored = 0;
-  for (const key of PROGRESS_KEYS) {
-    const value = payload[key];
-    if (value === undefined) continue;
-    window.localStorage.setItem(key, JSON.stringify(value));
-    restored += 1;
-  }
-  return restored;
 }
 
 export function AiSettingsDialog({ open, onClose, onSaved }: AiSettingsDialogProps) {
@@ -89,7 +53,7 @@ export function AiSettingsDialog({ open, onClose, onSaved }: AiSettingsDialogPro
     setStatus({ tone: 'idle', text: '' });
     setProgressStatus({ tone: 'idle', text: '' });
     try {
-      setProgressCode(window.localStorage.getItem(PROGRESS_CODE_KEY) || '');
+      setProgressCode(getProgressCode());
     } catch {
       setProgressCode('');
     }
@@ -203,7 +167,7 @@ export function AiSettingsDialog({ open, onClose, onSaved }: AiSettingsDialogPro
     }
     setProgressStatus({ tone: 'busy', text: '正在上传存档…' });
     try {
-      window.localStorage.setItem(PROGRESS_CODE_KEY, code);
+      window.localStorage.setItem('hangyeol_progress_code_v1', code);
       const res = await fetch(`/api/progress/${encodeURIComponent(code)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -228,7 +192,7 @@ export function AiSettingsDialog({ open, onClose, onSaved }: AiSettingsDialogPro
     }
     setProgressStatus({ tone: 'busy', text: '正在读取云端存档…' });
     try {
-      window.localStorage.setItem(PROGRESS_CODE_KEY, code);
+      window.localStorage.setItem('hangyeol_progress_code_v1', code);
       const res = await fetch(`/api/progress/${encodeURIComponent(code)}`);
       const data = (await res.json().catch(() => ({}))) as {
         exists?: boolean;
@@ -451,7 +415,7 @@ export function AiSettingsDialog({ open, onClose, onSaved }: AiSettingsDialogPro
                 </button>
               </div>
               <p className="text-[11px] leading-relaxed text-slate-500">
-                存档码相当于密码，随便起一个别人猜不到的；知道存档码的人就能读写这份进度。
+                填好存档码后会自动同步（约 8 秒一次），包含词表、进度、打卡日历与每日练习时长；知道存档码的人可读写。
               </p>
             </div>
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   AlertCircle,
   BookOpen,
@@ -548,7 +548,7 @@ export function VocabGardenView({
                   每日任务
                 </h1>
                 <p className="text-sm text-slate-600 leading-relaxed">
-                  按词表顺序学 {dailyPlan.dailyCount} 个新词：初学 → 复习 → 检查。
+                  按词表顺序学 {dailyPlan.dailyCount} 个新词：初学 → 复习 → 巩固。
                 </p>
               </div>
 
@@ -750,9 +750,7 @@ export function VocabGardenView({
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2 text-xs">
                     <span className="font-semibold text-emerald-700 flex items-center gap-1">
-                      <ClipboardCheck className="w-3.5 h-3.5" aria-hidden="true" />
-                      检查
-                    </span>
+                      <ClipboardCheck className="w-3.5 h-3.5" aria-hidden="true" />巩固</span>
                     <span className="text-slate-500 tabular-nums font-medium">
                       {stage3PassedTodayCount}/{todayDrawnCards.length || dailyPlan.dailyCount} 通过
                     </span>
@@ -767,7 +765,7 @@ export function VocabGardenView({
                   onClick={() => launchStage('check')}
                   className="w-full py-2.5 px-3 text-xs font-semibold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors cursor-pointer"
                 >
-                  开始检查
+                  开始巩固
                 </button>
               </div>
 

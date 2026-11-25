@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+﻿import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AlertCircle,
   ArrowRight,
@@ -86,6 +86,10 @@ export function DailyVocabSession({
   const [queueIds, setQueueIds] = useState<string[]>(() => initialQueue.map((c) => c.id));
   const [currentIdx, setCurrentIdx] = useState(0);
 
+  // 巩固阶段分两轮：先选词，再打字（打字轮可跳过）
+  const [checkPhase, setCheckPhase] = useState<'select' | 'type'>('select');
+  const [showTypePrompt, setShowTypePrompt] = useState(false);
+
   // Flashcard / Quick-Draw Card interactive state
   const [isFlipped, setIsFlipped] = useState(false);
   const [flashDirection, setFlashDirection] = useState<FlashcardDirection>('kr_to_zh');
@@ -125,6 +129,8 @@ export function DailyVocabSession({
     setTotalAttempts(0);
     setCorrectAttempts(0);
     setSessionDone(false);
+    setCheckPhase('select');
+    setShowTypePrompt(false);
   }, [stage, initialQueue]);
 
   const activeCardId =
@@ -159,12 +165,13 @@ export function DailyVocabSession({
       if (mod === 1) return 'choice';
       return cleanLen >= 2 && cleanLen <= 6 ? 'tiles' : 'choice';
     }
-    // stage === 'check': strict verification (Choice -> Tiles -> Typing)
+    // stage === 'check'（巩固）：第一轮只考选词，第二轮才打字
+    if (checkPhase === 'type') return 'typing';
     const mod = currentIdx % 3;
     if (mod === 0) return 'choice';
     if (mod === 1 && cleanLen >= 2 && cleanLen <= 6) return 'tiles';
-    return 'typing';
-  }, [activeCard, stage, learnState.attemptsById, currentIdx]);
+    return 'choice';
+  }, [activeCard, stage, learnState.attemptsById, currentIdx, checkPhase]);
 
   // 自动朗读：每张卡只自动播一次，翻面或重听都交给手动按钮
   const autoSpokeRef = useRef<string | null>(null);
@@ -343,11 +350,34 @@ export function DailyVocabSession({
 
     const nextIdx = currentIdx + 1;
     resetCardInputs();
+
+    // 巩固：选词轮结束后，先问要不要进入打字轮
+    if (stage === 'check' && checkPhase === 'select') {
+      if (nextIdx >= queueIds.length) {
+        setShowTypePrompt(true);
+        return;
+      }
+      setCurrentIdx(nextIdx);
+      return;
+    }
+
     if (nextIdx >= queueIds.length) {
       setSessionDone(true);
     } else {
       setCurrentIdx(nextIdx);
     }
+  };
+
+  const startTypeRound = () => {
+    setShowTypePrompt(false);
+    setCheckPhase('type');
+    setCurrentIdx(0);
+    resetCardInputs();
+  };
+
+  const skipTypeRound = () => {
+    setShowTypePrompt(false);
+    setSessionDone(true);
   };
 
   // 手动切换单词（初学阶段顺序由算法控制，不开放手动跳转）
@@ -418,8 +448,8 @@ export function DailyVocabSession({
       subtitle: '优先复习「没记住」和到期的词，间隔 5分→30分→12时→1天→2天→4天→7天→15天→30天。',
     },
     check: {
-      stepTag: '检查',
-      title: '检查 · 不看提示抽测',
+      stepTag: '巩固',
+      title: '巩固 · 不看提示抽测',
       subtitle: '不看提示抽测今天的词；错的自动记为「没记住」，下次优先复习。',
     },
     flashcard: {
@@ -822,8 +852,32 @@ export function DailyVocabSession({
           </div>
         </div>
 
+        {/* 选词轮结束后：询问是否进入打字轮 */}
+        {showTypePrompt && (
+          <div className="p-6 border border-slate-200 rounded-xl text-center space-y-3">
+            <p className="text-sm font-semibold text-slate-900">选词轮完成</p>
+            <p className="text-xs text-slate-500">要不要再来一轮打字？打字更难，但记得更牢。</p>
+            <div className="flex items-center justify-center gap-2">
+              <button
+                type="button"
+                onClick={startTypeRound}
+                className="px-4 py-2 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 rounded-lg cursor-pointer"
+              >
+                开始打字
+              </button>
+              <button
+                type="button"
+                onClick={skipTypeRound}
+                className="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg cursor-pointer"
+              >
+                跳过
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* 手动切词：上一个 / 下一个 */}
-        {stage !== 'learn' && !sessionDone && (
+        {stage !== 'learn' && !sessionDone && !showTypePrompt && (
           <div className="flex items-center justify-between gap-3">
             <button
               type="button"
@@ -954,7 +1008,7 @@ export function DailyVocabSession({
                   : stage === 'review'
                   ? '复习完成'
                   : stage === 'check'
-                  ? '检查完成'
+                  ? '巩固完成'
                   : '闪卡完成'}
               </p>
               <h2 className="text-2xl font-bold text-slate-900 tabular-nums">
@@ -1019,7 +1073,7 @@ export function DailyVocabSession({
                   onClick={() => onSwitchStage('check')}
                   className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 rounded-xl cursor-pointer"
                 >
-                  进入检查
+                  进入巩固
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </button>
               )}
@@ -1060,7 +1114,7 @@ export function DailyVocabSession({
                       {stage === 'learn'
                         ? '确认学会检验 · 选出正确的中文释义（选错自动记为没记住）'
                         : stage === 'check'
-                        ? '结业检查 · 选出最准确的中文释义'
+                        ? '巩固 · 选出最准确的中文释义'
                         : '艾宾浩斯主动回想 · 选择正确释义'}
                     </p>
                     <h2 className="font-kr text-3xl sm:text-4xl font-bold text-slate-900">
@@ -1217,7 +1271,7 @@ export function DailyVocabSession({
               <form onSubmit={handleSubmitTyping} className="space-y-5" data-testid="quiz-typing-panel">
                 <div>
                   <p className="text-xs font-medium text-blue-700 mb-1.5">
-                    结业检查 · 直接键入对应的韩语词汇
+                    巩固 · 直接键入对应的韩语词汇
                   </p>
                   <h2 className="text-2xl font-bold text-slate-900">{activeCard.meaningZh}</h2>
                   <p className="text-xs text-slate-500 mt-1">
@@ -1261,7 +1315,7 @@ export function DailyVocabSession({
                       type="submit"
                       className="px-5 py-2.5 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 rounded-xl transition-colors cursor-pointer"
                     >
-                      提交检查
+                      提交
                     </button>
                   </div>
                 )}

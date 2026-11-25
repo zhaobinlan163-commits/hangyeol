@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 @layer base {
   :root {
@@ -12,7 +12,7 @@
     scroll-behavior: smooth;
     /* 全局字号缩放：Tailwind 的 rem 尺寸随之整体下调（16px → 14px，约小两号）。
        想再调，只改这一个数字即可。 */
-    font-size: 14px;
+    font-size: 15px;
   }
 
   body {

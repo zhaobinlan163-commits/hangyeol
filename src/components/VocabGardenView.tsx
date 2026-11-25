@@ -174,12 +174,12 @@ export function VocabGardenView({
     }
   });
 
-  // 词表折叠：手机默认收起，桌面默认展开
-  const [listExpanded, setListExpanded] = useState<boolean>(() => {
+  // 词表折叠三档：全部 / 只显示 6 个 / 全部收起（手机默认 6 个）
+  const [listMode, setListMode] = useState<'all' | 'six' | 'none'>(() => {
     try {
-      return window.matchMedia('(min-width: 1024px)').matches;
+      return window.matchMedia('(min-width: 1024px)').matches ? 'all' : 'six';
     } catch {
-      return true;
+      return 'all';
     }
   });
   const LIST_PREVIEW_COUNT = 6;
@@ -387,9 +387,12 @@ export function VocabGardenView({
     });
   }, [filter, todayDrawnCards, forgottenCards, scopedByTopikCards, searchQuery]);
 
-  const visibleCards = listExpanded
-    ? filteredCards
-    : filteredCards.slice(0, LIST_PREVIEW_COUNT);
+  const visibleCards =
+    listMode === 'all'
+      ? filteredCards
+      : listMode === 'six'
+      ? filteredCards.slice(0, LIST_PREVIEW_COUNT)
+      : [];
 
   const inspectedCard =
     filteredCards.find((c) => c.id === selectedCardId) ?? filteredCards[0] ?? cards[0] ?? null;
@@ -1092,7 +1095,7 @@ export function VocabGardenView({
                 </form>
               )}
 
-              {/* 词表标题 + 折叠开关 */}
+              {/* 词表标题 + 三档折叠 */}
               <div className="flex items-center justify-between gap-2">
                 <span className="text-sm font-semibold text-slate-900">
                   词表{' '}
@@ -1100,24 +1103,37 @@ export function VocabGardenView({
                     {filteredCards.length} 词
                   </span>
                 </span>
-                <button
-                  type="button"
-                  onClick={() => setListExpanded((v) => !v)}
-                  aria-expanded={listExpanded}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-md cursor-pointer"
-                >
-                  {listExpanded ? '收起' : '展开'}
-                  <ChevronDown
-                    className={`w-3.5 h-3.5 transition-transform ${
-                      listExpanded ? 'rotate-180' : ''
-                    }`}
-                    aria-hidden="true"
-                  />
-                </button>
+                <div className="inline-flex items-center gap-1 p-0.5 bg-slate-100 rounded-lg">
+                  {(
+                    [
+                      ['all', '全部'],
+                      ['six', '6 个'],
+                      ['none', '收起'],
+                    ] as Array<['all' | 'six' | 'none', string]>
+                  ).map(([mode, label]) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setListMode(mode)}
+                      aria-pressed={listMode === mode}
+                      className={`px-2 py-1 text-[11px] font-medium rounded-md cursor-pointer transition-colors ${
+                        listMode === mode
+                          ? 'bg-white text-slate-900 font-semibold shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Word Rows */}
-              {filteredCards.length === 0 ? (
+              {listMode === 'none' ? (
+                <p className="text-xs text-slate-400 py-2">
+                  词表已收起（{filteredCards.length} 词），点上方「全部 / 6 个」展开。
+                </p>
+              ) : filteredCards.length === 0 ? (
                 <div className="py-12 text-center text-sm text-slate-500">
                   {filter === 'forgotten'
                     ? '太棒了！目前没有标记为「没记住」的错词。'
@@ -1196,13 +1212,13 @@ export function VocabGardenView({
                 </ul>
               )}
 
-              {!listExpanded && filteredCards.length > visibleCards.length && (
+              {listMode !== 'all' && filteredCards.length > visibleCards.length && (
                 <button
                   type="button"
-                  onClick={() => setListExpanded(true)}
+                  onClick={() => setListMode('all')}
                   className="w-full py-2.5 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg cursor-pointer"
                 >
-                  展开全部 {filteredCards.length} 词
+                  显示全部 {filteredCards.length} 词
                 </button>
               )}
             </section>

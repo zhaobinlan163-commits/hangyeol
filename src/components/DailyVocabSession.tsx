@@ -257,7 +257,7 @@ export function DailyVocabSession({
     resetCardInputs();
   };
 
-  const submitOutcome = (outcome: EbbinghausOutcome, customDetail?: string) => {
+  const submitOutcome = (outcome: EbbinghausOutcome, _customDetail?: string) => {
     if (!activeCard || feedback) return;
 
     onRecordOutcome(activeCard.id, outcome, stage);
@@ -287,12 +287,10 @@ export function DailyVocabSession({
       const isMastered = outcome === 'remembered';
       setFeedback({
         status: outcome,
-        title: isMastered ? '确认学会 · 已排入艾宾浩斯曲线' : '已自动记录为「没记住」',
-        detail:
-          customDetail ||
-          (isMastered
-            ? `「${activeCard.korean}」初学确认通过，将在 ${nextIntervalLabel} 后进入艾宾浩斯复习。`
-            : `正确答案：${activeCard.korean} ${activeCard.spokenPronunciation} — ${activeCard.meaningZh}。系统已自动记为「没记住」，稍后将在本轮重新抽测确认。`),
+        title: isMastered
+          ? `「${activeCard.korean}」已掌握 · 下次复习 ${nextIntervalLabel}`
+          : `「${activeCard.korean}」没记住 · 稍后重学`,
+        detail: '',
         requeued: !isMastered,
       });
       return;
@@ -307,17 +305,11 @@ export function DailyVocabSession({
         status: outcome,
         title:
           outcome === 'remembered'
-            ? `记忆推进至节点 ${nextStepIdx + 1}/9`
+            ? `「${activeCard.korean}」已掌握 · 下次复习 ${nextIntervalLabel}`
             : outcome === 'vague'
-            ? '标记模糊 · 缩短艾宾浩斯间隔'
-            : '已自动记录为「没记住」并重置曲线',
-        detail:
-          customDetail ||
-          (outcome === 'remembered'
-            ? `已按艾宾浩斯遗忘曲线安排在 ${nextIntervalLabel} 后再次复习。`
-            : outcome === 'vague'
-            ? `将在 30 分钟后再次提醒巩固「${activeCard.korean}」。`
-            : `正确答案：${activeCard.korean} — ${activeCard.meaningZh}。已重置至第 1 节点（5 分钟后回炉）${requeueReview ? '，并已追加到本轮末尾再练一次。' : '。'}`),
+            ? `「${activeCard.korean}」模糊 · 30 分钟后复习`
+            : `「${activeCard.korean}」没记住 · 5 分钟后复习`,
+        detail: '',
         requeued: requeueReview,
       });
       return;
@@ -326,12 +318,11 @@ export function DailyVocabSession({
     // stage === 'check'
     setFeedback({
       status: outcome,
-      title: outcome === 'remembered' ? '检查通过' : '未通过 · 自动记录为「没记住」',
-      detail:
-        customDetail ||
-        (outcome === 'remembered'
-          ? `「${activeCard.korean}」已牢固掌握，下次艾宾浩斯复习：${nextIntervalLabel}后。`
-          : `正确答案：${activeCard.korean} ${activeCard.spokenPronunciation} — ${activeCard.meaningZh}。已自动收入「没记住」错词本，将在 5 分钟后优先回炉。`),
+      title:
+        outcome === 'remembered'
+          ? `「${activeCard.korean}」已掌握 · 下次复习 ${nextIntervalLabel}`
+          : `「${activeCard.korean}」没记住 · 5 分钟后复习`,
+      detail: '',
     });
   };
 
@@ -724,7 +715,7 @@ export function DailyVocabSession({
                   className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" aria-hidden="true" />
-                  还没记住（记为没记住并稍后重学）
+                  没记住
                 </button>
                 <button
                   type="button"
@@ -735,7 +726,8 @@ export function DailyVocabSession({
                   data-testid="learn-start-confirm-btn"
                   className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 rounded-xl transition-colors cursor-pointer"
                 >
-                  记住了，进入确认学会检验
+                  <Check className="w-4 h-4" aria-hidden="true" />
+                  进入确认
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </button>
               </>
@@ -753,8 +745,11 @@ export function DailyVocabSession({
                     data-testid="flashcard-rate-forgotten"
                     className="py-3 px-3 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-800 text-sm font-semibold transition-colors cursor-pointer flex flex-col items-center gap-0.5"
                   >
-                    <span>没记住</span>
-                    <span className="text-[11px] font-normal text-rose-700">自动回炉 · 5分钟后</span>
+                    <span className="inline-flex items-center gap-1">
+                      <X className="w-4 h-4" aria-hidden="true" />
+                      没记住
+                    </span>
+                    <span className="text-[11px] font-normal text-rose-700">5 分钟后</span>
                   </button>
                   <button
                     type="button"
@@ -762,8 +757,8 @@ export function DailyVocabSession({
                     data-testid="flashcard-rate-vague"
                     className="py-3 px-3 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-900 text-sm font-semibold transition-colors cursor-pointer flex flex-col items-center gap-0.5"
                   >
-                    <span>有点模糊</span>
-                    <span className="text-[11px] font-normal text-amber-800">缩短间隔 · 30分钟后</span>
+                    <span>模糊</span>
+                    <span className="text-[11px] font-normal text-amber-800">30 分钟后</span>
                   </button>
                   <button
                     type="button"
@@ -771,7 +766,10 @@ export function DailyVocabSession({
                     data-testid="flashcard-rate-remembered"
                     className="py-3 px-3 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 text-sm font-semibold transition-colors cursor-pointer flex flex-col items-center gap-0.5"
                   >
-                    <span>稳稳记住</span>
+                    <span className="inline-flex items-center gap-1">
+                      <Check className="w-4 h-4" aria-hidden="true" />
+                      记住
+                    </span>
                     <span className="text-[11px] font-normal text-emerald-800">
                       推进至 {EBBINGHAUS_STEPS[Math.min(EBBINGHAUS_STEPS.length - 1, activeStepIndex + 1)].shortLabel}后
                     </span>
@@ -864,8 +862,9 @@ export function DailyVocabSession({
                 {learnState.forgottenIds.length > 0 && (
                   <>
                     <span aria-hidden="true">·</span>
-                    <span className="font-semibold text-rose-700">
-                      自动记为没记住 {learnState.forgottenIds.length} 词
+                    <span className="font-semibold text-rose-700 inline-flex items-center gap-0.5">
+                      <X className="w-3.5 h-3.5" aria-hidden="true" />
+                      {learnState.forgottenIds.length}
                     </span>
                   </>
                 )}
@@ -876,11 +875,17 @@ export function DailyVocabSession({
                   当前进度 {Math.min(currentIdx + 1, queueIds.length)} / {queueIds.length}
                 </span>
                 <span aria-hidden="true">·</span>
-                <span className="text-emerald-700 font-medium">记住 {passedIds.length}</span>
+                <span className="text-emerald-700 font-medium inline-flex items-center gap-0.5">
+                  <Check className="w-3.5 h-3.5" aria-hidden="true" />
+                  {passedIds.length}
+                </span>
                 {forgottenIds.length > 0 && (
                   <>
                     <span aria-hidden="true">·</span>
-                    <span className="text-rose-700 font-medium">没记住 {forgottenIds.length}</span>
+                    <span className="text-rose-700 font-medium inline-flex items-center gap-0.5">
+                      <X className="w-3.5 h-3.5" aria-hidden="true" />
+                      {forgottenIds.length}
+                    </span>
                   </>
                 )}
               </div>
@@ -957,7 +962,7 @@ export function DailyVocabSession({
                 {totalAttempts === 0 ? 100 : Math.round((correctAttempts / totalAttempts) * 100)}%
               </h2>
               <p className="text-sm text-slate-600 max-w-lg mx-auto">
-                所有词条已根据你的作答结果自动更新艾宾浩斯遗忘曲线节点；凡答错或标记「没记住」的单词均已自动记录并安排优先回炉。
+                错的词已记为「没记住」，5 分钟后优先复习。
               </p>
             </div>
 
@@ -965,8 +970,8 @@ export function DailyVocabSession({
               <div className="p-4 bg-rose-50/70 border border-rose-200 rounded-xl space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-semibold text-rose-900 flex items-center gap-1.5">
-                    <AlertCircle className="w-4 h-4 text-rose-700" aria-hidden="true" />
-                    本轮自动记录为「没记住」的重点词 ({forgottenCardObjects.length} 词)
+                    <X className="w-4 h-4 text-rose-700" aria-hidden="true" />
+                    错词 ({forgottenCardObjects.length})
                   </p>
                   <button
                     type="button"
@@ -974,7 +979,7 @@ export function DailyVocabSession({
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-rose-800 bg-white border border-rose-300 hover:bg-rose-100 rounded-lg cursor-pointer"
                   >
                     <Layers className="w-3.5 h-3.5" aria-hidden="true" />
-                    立即用闪卡重练这 {forgottenCardObjects.length} 词
+                    立即闪卡重练
                   </button>
                 </div>
                 <ul className="divide-y divide-rose-200/70">
@@ -1276,32 +1281,15 @@ export function DailyVocabSession({
                     : 'bg-rose-50 border-rose-200 text-rose-950'
                 }`}
               >
-                <div className="space-y-1.5">
-                  <p className="text-sm font-bold flex items-center gap-1.5">
-                    {feedback.status === 'remembered' ? (
-                      <Check className="w-4 h-4 text-emerald-700" aria-hidden="true" />
-                    ) : feedback.status === 'vague' ? (
-                      <AlertCircle className="w-4 h-4 text-amber-700" aria-hidden="true" />
-                    ) : (
-                      <X className="w-4 h-4 text-rose-700" aria-hidden="true" />
-                    )}
-                    {feedback.title}
-                  </p>
-                  <p className="text-sm">{feedback.detail}</p>
-                  <div className="flex flex-wrap items-center gap-2 pt-0.5">
-                    <span className="font-kr text-xs font-semibold text-slate-900 break-keep">
-                      例句：{activeCard.exampleKr}
-                    </span>
-                    <KoreanReadButton
-                      text={activeCard.exampleKr}
-                      speakKorean={speakKorean}
-                      isKeyLoading={isKeyLoading}
-                      isKeyPlaying={isKeyPlaying}
-                      compact
-                      label="跟读"
-                    />
-                  </div>
-                  <p className="text-xs opacity-85">助记：{activeCard.memriseTip}</p>
+                <div className="flex items-center gap-2 min-w-0">
+                  {feedback.status === 'remembered' ? (
+                    <Check className="w-4 h-4 shrink-0 text-emerald-700" aria-hidden="true" />
+                  ) : feedback.status === 'vague' ? (
+                    <AlertCircle className="w-4 h-4 shrink-0 text-amber-700" aria-hidden="true" />
+                  ) : (
+                    <X className="w-4 h-4 shrink-0 text-rose-700" aria-hidden="true" />
+                  )}
+                  <p className="text-sm font-semibold break-keep">{feedback.title}</p>
                 </div>
                 <button
                   type="button"

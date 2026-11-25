@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { SEED_VOCAB_CARDS } from '../data/seedData';
-import { TOPIK_VOCAB_CARDS } from '../data/topikVocab';
 import type {
   ChatMessage,
   DailyStats,
@@ -19,7 +17,6 @@ import {
   applyReviewResult,
   createVocabFromOfficialTopik,
   createVocabFromParsedToken,
-  mergeSeedVocab,
   plantNewWord,
 } from '../utils/srs';
 
@@ -31,8 +28,6 @@ const CHECKIN_STORAGE_KEY = 'hangyeol_checkin_v1';
 
 /** 每天练满 15 分钟才计入打卡 */
 export const CHECKIN_TARGET_SECONDS = 15 * 60;
-
-const ALL_SEED_VOCAB: VocabCard[] = [...SEED_VOCAB_CARDS, ...TOPIK_VOCAB_CARDS];
 
 const DEFAULT_STATS: DailyStats = {
   streakDays: 0,
@@ -114,15 +109,13 @@ function createDefaultDailyPlan(
 function loadInitialVocab(): VocabCard[] {
   try {
     const raw = window.localStorage.getItem(VOCAB_STORAGE_KEY);
-    if (!raw) return ALL_SEED_VOCAB;
+    if (!raw) return [];
     const parsed = JSON.parse(raw) as VocabCard[];
-    if (Array.isArray(parsed) && parsed.length > 0) {
-      return mergeSeedVocab(parsed, ALL_SEED_VOCAB);
-    }
+    if (Array.isArray(parsed)) return parsed;
   } catch {
-    // Fallback to seed data on corrupted storage
+    // 存储损坏时按空词库处理，用户可以重新抽取
   }
-  return ALL_SEED_VOCAB;
+  return [];
 }
 
 function loadInitialStats(): DailyStats {

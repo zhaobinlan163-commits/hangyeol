@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   AlertCircle,
   BookOpen,
@@ -198,7 +198,6 @@ export function VocabGardenView({
     remainingPoolCount: number;
     totalLevelPoolCount: number;
   } | null>(null);
-  const autoDrawnRef = useRef(false);
 
   // Active 3-Stage / Flashcard Session State
   const [activeSession, setActiveSession] = useState<{
@@ -285,14 +284,7 @@ export function VocabGardenView({
     [cards, dailyPlan.dateKey, dailyPlan.drawNonce, onApplyDailyDrawnWords]
   );
 
-  // Automatically draw today's TOPIK deck on first open if today's deck has not been drawn yet
-  useEffect(() => {
-    if (autoDrawnRef.current) return;
-    if (dailyPlan.drawnCardIds.length === 0) {
-      autoDrawnRef.current = true;
-      void drawDailyTopikDeck(dailyPlan.dailyCount, dailyPlan.targetLevel, false);
-    }
-  }, [dailyPlan.drawnCardIds.length, dailyPlan.dailyCount, dailyPlan.targetLevel, drawDailyTopikDeck]);
+  // 不再自动抽词：新用户词库为空，由用户点「抽取 N 词」开始
 
   const launchStage = useCallback(
     (stage: DailyVocabStage, customQueue?: VocabCard[]) => {

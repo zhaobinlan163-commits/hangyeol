@@ -140,8 +140,29 @@ export function AiSettingsDialog({ open, onClose, onSaved }: AiSettingsDialogPro
     onSaved?.();
   };
 
-  const handleExport = () => {
-    try {
+  // 清空本机学习数据（词库/进度/打卡/聊天），AI Key 与笔记本保留
+  const handleResetLearningData = () => {
+    const ok = window.confirm(
+      '清空本机的词库、学习进度、打卡记录和聊天记录？\nAI Key 和笔记本会保留。此操作不可恢复。'
+    );
+    if (!ok) return;
+    for (const key of [
+      'hangyeol_vocab_v1',
+      'hangyeol_stats_v2',
+      'hangyeol_daily_plan_v1',
+      'hangyeol_chat_v1',
+      'hangyeol_checkin_v1',
+    ]) {
+      try {
+        window.localStorage.removeItem(key);
+      } catch {
+        // ignore
+      }
+    }
+    window.location.reload();
+  };
+
+  const handleExport = () => {    try {
       const blob = new Blob([JSON.stringify(collectProgress(), null, 2)], {
         type: 'application/json',
       });
@@ -440,6 +461,17 @@ export function AiSettingsDialog({ open, onClose, onSaved }: AiSettingsDialogPro
                 <span>{progressStatus.text}</span>
               </p>
             )}
+
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+              <span className="text-[11px] text-slate-400">从零开始？</span>
+              <button
+                type="button"
+                onClick={handleResetLearningData}
+                className="text-[11px] font-semibold text-rose-600 hover:bg-rose-50 px-2 py-1 rounded-md cursor-pointer"
+              >
+                清空本机学习数据
+              </button>
+            </div>
           </section>
         </div>
       </div>

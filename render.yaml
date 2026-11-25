@@ -19,6 +19,5 @@ services:
         value: https://api.deepseek.com
       - key: DEEPSEEK_MODEL
         value: deepseek-flash
-      # 在 Render 控制台里手动填，别提交进仓库
-      - key: DEEPSEEK_API_KEY
-        sync: false
+      # 服务器兜底 key 是可选的：默认留空，用户在网页「设置」里填自己的 key。
+      # 想设全局兜底，就在 Render 控制台 → Environment 里手动加 DEEPSEEK_API_KEY。

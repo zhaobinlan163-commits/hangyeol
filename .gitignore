@@ -15,3 +15,5 @@ cloudflared.exe
 data/progress/
 *.zip
 *.url
+.edge-*/
+*.png

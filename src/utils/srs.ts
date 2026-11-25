@@ -276,9 +276,17 @@ export function createVocabFromOfficialTopik(
 ): VocabCard {
   const baseWord = word.korean.trim();
   const topikGroup = mapOfficialLevelToTopikGroup(word.levelNum);
-  const exampleKr = word.collocation ? `${word.collocation}` : baseWord;
+  // 搭配多为「名词+助词」的片段（如 하다 → 운동을），补上词干才是完整短语
+  const patchWord = /(을|를|이|가|에|에서|에게|와|과|도|만|으로|로)$/.test(word.collocation.trim());
+  const exampleKr = word.collocation
+    ? patchWord
+      ? `${word.collocation.trim()} ${baseWord}`
+      : word.collocation
+    : baseWord;
   const exampleZh = word.collocation
-    ? `高频搭配「${word.collocation}」— ${word.meaningZh}`
+    ? word.collocationZh
+      ? `高频搭配「${exampleKr}」— ${word.collocationZh}`
+      : `高频搭配「${exampleKr}」— ${word.meaningZh}`
     : word.meaningZh;
 
   return {

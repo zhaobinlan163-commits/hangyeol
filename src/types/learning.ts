@@ -28,6 +28,7 @@ export interface OfficialTopikWord {
   officialGrade: string;
   freqRank: number;
   collocation: string;
+  collocationZh?: string;
   memriseTip: string;
 }
 

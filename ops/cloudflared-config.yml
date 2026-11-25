@@ -1,0 +1,16 @@
+# Cloudflare Tunnel 配置模板
+# 用法：把 <TUNNEL_ID> 换成 `cloudflared tunnel create hangyeol` 输出的 ID，
+# 然后复制到 C:\Users\<你>\.cloudflared\config.yml
+
+tunnel: <TUNNEL_ID>
+credentials-file: C:\Users\LENOVO\.cloudflared\<TUNNEL_ID>.json
+
+ingress:
+  # 主域名
+  - hostname: hangyeollilith.com
+    service: http://127.0.0.1:3200
+  # www 子域
+  - hostname: www.hangyeollilith.com
+    service: http://127.0.0.1:3200
+  # 其他一律 404
+  - service: http_status:404

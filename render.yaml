@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: hangyeol
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    # 必须带 --include=dev：构建需要 vite（devDependency）
+    buildCommand: npm install --include=dev && npm run build
+    # Render 会注入 PORT；这里显式声明 NODE_ENV=production，
+    # server.ts 在 production 下才会读 process.env.PORT 并托管 dist/
+    startCommand: NODE_ENV=production node server.ts
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: DEEPSEEK_BASE_URL
+        value: https://api.deepseek.com
+      - key: DEEPSEEK_MODEL
+        value: deepseek-flash
+      # 在 Render 控制台里手动填，别提交进仓库
+      - key: DEEPSEEK_API_KEY
+        sync: false

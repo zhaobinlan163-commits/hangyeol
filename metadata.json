@@ -1,0 +1,6 @@
+{
+  "name": "한결 HanGyeol — 韩语伴学智能体",
+  "description": "集实时发音纠错、地道日常表达建议、忆术家式每日间隔背词、语法造句实战与 YouTube 视频韩语台词实时解析于一体的韩语学习智能体。",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

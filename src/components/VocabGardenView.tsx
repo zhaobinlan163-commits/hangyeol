@@ -517,7 +517,7 @@ export function VocabGardenView({
             onClick={() => setSubView('official_book')}
             className="text-xs font-semibold text-blue-700 hover:underline cursor-pointer"
           >
-            浏览全部 4,056 词 TOPIK 1–6级官方词书 →
+            浏览全部词书 →
           </button>
         )}
       </div>
@@ -785,7 +785,7 @@ export function VocabGardenView({
             </div>
 
               {/* Ebbinghaus Curve Summary Strip */}
-            <div className="pt-4 border-t border-slate-100 grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="hidden lg:grid pt-4 border-t border-slate-100 lg:grid-cols-4 gap-4">
               <div>
                 <p className="text-xs text-slate-500">没记住 · 待优先回炉</p>
                 <p className="text-xl font-bold text-rose-700 tabular-nums mt-0.5">

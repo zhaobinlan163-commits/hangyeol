@@ -105,7 +105,7 @@ export function LiveTutorCallView({
   onAddTokenToGarden,
   onActivityComplete,
 }: LiveTutorCallViewProps) {
-  const [tutorMode, setTutorMode] = useState<'call' | 'chat'>('call');
+  const [tutorMode, setTutorMode] = useState<'call' | 'chat'>('chat');
   const [selectedTopicId, setSelectedTopicId] = useState(BEGINNER_TOPICS[0].id);
   const [slowTeacherSpeech, setSlowTeacherSpeech] = useState(false);
   const [speechLang, setSpeechLang] = useState<'ko-KR' | 'zh-CN'>('ko-KR');
@@ -628,48 +628,11 @@ export function LiveTutorCallView({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            {tutorMode === 'call'
-              ? 'AI 语音陪练'
-              : 'AI 对话陪练'}
+            'AI 对话陪练'
           </h1>
           <p className="text-sm text-slate-600 mt-1">
-            {tutorMode === 'call'
-              ? '实时带读、发音纠错，逐句拆解单词与语法。'
-              : '多轮对话，支持语音输入、朗读与词汇收藏。'}
+            '多轮对话，支持朗读与词汇收藏。'
           </p>
-        </div>
-
-        <div
-          role="tablist"
-          aria-label="AI 陪练模式切换"
-          className="inline-flex items-center p-1 bg-slate-200/70 rounded-lg self-start shrink-0"
-        >
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tutorMode === 'call'}
-            onClick={() => setTutorMode('call')}
-            className={`px-3.5 py-2 text-xs sm:text-sm font-medium rounded-md transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-              tutorMode === 'call'
-                ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            实时语音陪练
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tutorMode === 'chat'}
-            onClick={() => setTutorMode('chat')}
-            className={`px-3.5 py-2 text-xs sm:text-sm font-medium rounded-md transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-              tutorMode === 'chat'
-                ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            AI 私教对话
-          </button>
         </div>
       </div>
 

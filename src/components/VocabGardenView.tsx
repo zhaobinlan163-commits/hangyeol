@@ -769,47 +769,9 @@ export function VocabGardenView({
                 </button>
               </div>
 
-              {/* Memory Aid: Flashcards & Quick-Draw Cards */}
-              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/70 flex flex-col justify-between gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between gap-2 text-xs">
-                    <span className="font-semibold text-slate-700 flex items-center gap-1">
-                      <Layers className="w-3.5 h-3.5" aria-hidden="true" />
-                      闪卡
-                    </span>
-                    <span className="text-slate-500 tabular-nums font-medium">
-                      空格翻卡
-                    </span>
-                  </div>
-                  <h2 className="text-base font-bold text-slate-900">闪卡抽背</h2>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    看韩想中 / 看中想韩 / 听音盲抽。
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    data-testid="launch-flashcard-today"
-                    onClick={() => launchStage('flashcard')}
-                    className="flex-1 py-2.5 px-3 text-xs font-semibold text-slate-800 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg transition-colors cursor-pointer whitespace-nowrap"
-                  >
-                    今日抽背
-                  </button>
-                  {forgottenCards.length > 0 && (
-                    <button
-                      type="button"
-                      data-testid="launch-flashcard-forgotten"
-                      onClick={() => launchStage('flashcard', forgottenCards)}
-                      className="py-2.5 px-2.5 text-xs font-semibold text-rose-800 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition-colors cursor-pointer whitespace-nowrap tabular-nums"
-                    >
-                      错词 ({forgottenCards.length})
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
+                          </div>
 
-            {/* Ebbinghaus Curve Summary Strip */}
+              {/* Ebbinghaus Curve Summary Strip */}
             <div className="pt-4 border-t border-slate-100 grid grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
                 <p className="text-xs text-slate-500">没记住 · 待优先回炉</p>

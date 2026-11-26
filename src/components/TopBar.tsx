@@ -1,4 +1,4 @@
-import { Settings } from 'lucide-react';
+﻿import { Settings } from 'lucide-react';
 import type { ActiveTab } from '../types/learning';
 
 interface TopBarProps {
@@ -12,7 +12,6 @@ interface TopBarProps {
 const NAV_ITEMS: Array<{ id: ActiveTab; label: string }> = [
   { id: 'vocab', label: '每日背词' },
   { id: 'live', label: 'AI 陪练' },
-  { id: 'pronunciation', label: '发音纠错' },
   { id: 'grammar', label: '语法造句' },
   { id: 'video', label: '视频解析' },
   { id: 'notes', label: '笔记本' },

@@ -12,7 +12,6 @@ import { AiSettingsDialog } from './components/AiSettingsDialog';
 import { DailyOverviewBar } from './components/DailyOverviewBar';
 import { VocabGardenView } from './components/VocabGardenView';
 import { LiveTutorCallView } from './components/LiveTutorCallView';
-import { PronunciationCoachView } from './components/PronunciationCoachView';
 import { GrammarWorkshopView } from './components/GrammarWorkshopView';
 import { VideoAnalyzerView } from './components/VideoAnalyzerView';
 import { NotesView } from './components/NotesView';
@@ -114,7 +113,7 @@ export default function App() {
             <span className="flex items-center gap-2 min-w-0">
               <KeyRound className="w-3.5 h-3.5 shrink-0 text-amber-700" aria-hidden="true" />
               <span className="break-words">
-                还差一把 DeepSeek API Key：填上之后 AI 陪练、发音纠错、语法造句、视频解析才能用。
+                还差一把 DeepSeek API Key：填上之后 AI 陪练、语法造句、视频解析才能用。
               </span>
             </span>
             <button
@@ -226,17 +225,6 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'pronunciation' && (
-          <PronunciationCoachView
-            speakKorean={speakKorean}
-            isKeyPlaying={isKeyPlaying}
-            isKeyLoading={isKeyLoading}
-            hasWordInGarden={hasWordInGarden}
-            onAddTokenToGarden={addVocabFromToken}
-            onActivityComplete={awardActivityXp}
-          />
-        )}
-
         {activeTab === 'grammar' && (
           <GrammarWorkshopView
             masteredGrammarIds={stats.masteredGrammarIds}
@@ -291,13 +279,6 @@ export default function App() {
               className="hover:text-slate-900 cursor-pointer"
             >
               AI 陪练
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('pronunciation')}
-              className="hover:text-slate-900 cursor-pointer"
-            >
-              发音纠错
             </button>
             <button
               type="button"

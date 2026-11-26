@@ -102,6 +102,7 @@ export function GrammarWorkshopView({
   const [askInput, setAskInput] = useState('');
   const [isAsking, setIsAsking] = useState(false);
   const [askError, setAskError] = useState<string | null>(null);
+  const [listMode, setListMode] = useState<'all' | 'half' | 'none'>('half');
   const [askLog, setAskLog] = useState<GrammarAskTurn[]>([]);
   const [savedTurns, setSavedTurns] = useState<number[]>([]);
 
@@ -131,6 +132,13 @@ export function GrammarWorkshopView({
       );
     });
   }, [levelFilter, searchQuery]);
+
+  const visibleLessons =
+    listMode === 'all'
+      ? filteredLessons
+      : listMode === 'half'
+      ? filteredLessons.slice(0, Math.max(6, Math.ceil(filteredLessons.length / 2)))
+      : [];
 
   const activeLesson =
     ALL_GRAMMAR_LESSONS.find((g) => g.id === selectedId) ?? filteredLessons[0] ?? ALL_GRAMMAR_LESSONS[0];
@@ -256,10 +264,31 @@ export function GrammarWorkshopView({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Syllabus Column (4 cols) */}
         <aside aria-label="TOPIK 语法目录" className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-4 space-y-3">
-          <div className="flex items-center justify-between px-1">
+          <div className="flex items-center justify-between gap-2 px-1">
             <h2 className="text-xs font-semibold text-slate-600">
-              TOPIK 1–6级语法大纲 ({filteredLessons.length})
+              语法 ({filteredLessons.length})
             </h2>
+            <div className="inline-flex items-center gap-1 p-0.5 bg-slate-100 rounded-lg">
+              {([
+                ['all', '全部'],
+                ['half', '一半'],
+                ['none', '收起'],
+              ] as Array<['all' | 'half' | 'none', string]>).map(([mode, label]) => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => setListMode(mode)}
+                  aria-pressed={listMode === mode}
+                  className={`px-2 py-0.5 text-[11px] font-medium rounded-md cursor-pointer ${
+                    listMode === mode
+                      ? 'bg-white text-slate-900 font-semibold shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* TOPIK Level Filter */}
@@ -310,9 +339,11 @@ export function GrammarWorkshopView({
 
           {filteredLessons.length === 0 ? (
             <p className="py-8 text-center text-xs text-slate-500">未找到匹配的语法条目。</p>
+          ) : listMode === 'none' ? (
+            <p className="py-6 text-center text-xs text-slate-400">列表已收起，点上方「全部 / 一半」展开。</p>
           ) : (
             <ul className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto pr-1" data-testid="grammar-list">
-              {filteredLessons.map((lesson, idx) => {
+              {visibleLessons.map((lesson, idx) => {
                 const isSelected = lesson.id === activeLesson.id;
                 const isMastered = masteredGrammarIds.includes(lesson.id);
                 const numLabel = String(idx + 1).padStart(2, '0');

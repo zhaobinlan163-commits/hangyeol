@@ -49,6 +49,13 @@ export function VideoAnalyzerView({
   } | null>(null);
 
   // Curated interactive playback state
+  const [playerOpen, setPlayerOpen] = useState<boolean>(() => {
+    try {
+      return window.matchMedia('(min-width: 1024px)').matches;
+    } catch {
+      return true;
+    }
+  });
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTimeSec, setCurrentTimeSec] = useState(0);
   const [playbackRate, setPlaybackRate] = useState<0.75 | 1>(1);
@@ -600,7 +607,20 @@ export function VideoAnalyzerView({
         {/* Left Zone: Player & Synced Interactive Transcript */}
         <section aria-label="视频播放与互动字幕" className="lg:col-span-7 space-y-5">
           {/* Player Container */}
-          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setPlayerOpen((v) => !v)}
+            aria-expanded={playerOpen}
+            className="lg:hidden w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 cursor-pointer"
+          >
+            视频播放器
+            <span className="text-slate-400">{playerOpen ? '收起' : '展开'}</span>
+          </button>
+          <div
+            className={`bg-white border border-slate-200 rounded-2xl overflow-hidden ${
+              playerOpen ? '' : 'hidden lg:block'
+            }`}
+          >
             {externalVideo && externalVideo.videoId ? (
               <div className="aspect-video bg-slate-950">
                 <iframe

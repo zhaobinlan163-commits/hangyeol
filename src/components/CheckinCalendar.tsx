@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CalendarCheck, Check, ChevronLeft, ChevronRight, Flame } from 'lucide-react';
+import { CalendarCheck, Check, ChevronDown, ChevronLeft, ChevronRight, Flame } from 'lucide-react';
 import { getTodayDateKey } from '../utils/korean';
 
 interface CheckinCalendarProps {
@@ -23,6 +23,7 @@ export function CheckinCalendar({
 }: CheckinCalendarProps) {
   const todayKey = getTodayDateKey();
   const [monthOffset, setMonthOffset] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const view = useMemo(() => {
     const base = new Date(`${todayKey}T00:00:00`);
@@ -59,12 +60,21 @@ export function CheckinCalendar({
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            className="flex items-center gap-2 cursor-pointer"
+          >
             <CalendarCheck className="w-4 h-4 text-emerald-700" aria-hidden="true" />
-            打卡日历
-          </h2>
+            <span className="text-base font-bold text-slate-900">打卡日历</span>
+            <ChevronDown
+              className={`w-4 h-4 text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`}
+              aria-hidden="true"
+            />
+          </button>
           <p className="mt-1 text-xs text-slate-500">
-            每天练满 {Math.round(targetSeconds / 60)} 分钟自动打卡，不用手动点。
+            每天练满 {Math.round(targetSeconds / 60)} 分钟自动打卡
           </p>
         </div>
         <div className="flex items-center gap-3 text-xs">
@@ -76,6 +86,7 @@ export function CheckinCalendar({
         </div>
       </div>
 
+      {open && (
       <div className="mt-4 flex flex-col lg:flex-row gap-6">
         {/* Month grid */}
         <div className="w-full max-w-xs shrink-0">
@@ -174,6 +185,7 @@ export function CheckinCalendar({
           </p>
         </div>
       </div>
+      )}
     </section>
   );
 }

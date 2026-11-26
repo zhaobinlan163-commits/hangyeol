@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import {
   AlertCircle,
   CheckCircle2,
+  ChevronDown,
   Loader2,
   Mic,
   Plus,
@@ -75,6 +76,7 @@ export function AiTutorChatView({
   onActivityComplete,
 }: AiTutorChatViewProps) {
   const [tutorRole, setTutorRole] = useState<TutorRole>('beginner_teacher');
+  const [rolesOpen, setRolesOpen] = useState(false);
   const [inputText, setInputText] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [chatError, setChatError] = useState<string | null>(null);
@@ -233,10 +235,24 @@ export function AiTutorChatView({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-      {/* Left Column (4 cols): Tutor Role Selector & Starter Prompts */}
-      <aside className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-6 space-y-6">
-        <div className="space-y-2">
-          <p className="text-xs font-semibold text-slate-600">选择 AI 私教角色</p>
+      {/* Left Column (4 cols): Tutor Role Selector */}
+      <aside className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 space-y-3">
+        <button
+          type="button"
+          onClick={() => setRolesOpen((v) => !v)}
+          aria-expanded={rolesOpen}
+          className="w-full flex items-center justify-between gap-2 text-left cursor-pointer"
+        >
+          <span className="text-xs font-semibold text-slate-600">
+            角色 · {activeRoleInfo.label}
+          </span>
+          <ChevronDown
+            className={`w-4 h-4 text-slate-400 transition-transform ${rolesOpen ? 'rotate-180' : ''}`}
+            aria-hidden="true"
+          />
+        </button>
+
+        {rolesOpen && (
           <div className="space-y-2">
             {TUTOR_ROLES.map((role) => {
               const active = role.id === tutorRole;
@@ -245,7 +261,7 @@ export function AiTutorChatView({
                   key={role.id}
                   type="button"
                   onClick={() => setTutorRole(role.id)}
-                  className={`w-full text-left p-3.5 rounded-xl border transition-colors cursor-pointer ${
+                  className={`w-full text-left p-3 rounded-xl border transition-colors cursor-pointer ${
                     active
                       ? 'border-blue-600 bg-blue-50/70'
                       : 'border-slate-200 bg-white hover:border-slate-300'
@@ -257,28 +273,7 @@ export function AiTutorChatView({
               );
             })}
           </div>
-        </div>
-
-        <div className="space-y-2.5 pt-4 border-t border-slate-100">
-          <p className="text-xs font-semibold text-slate-600">推荐多轮练习话题（点击直接提问）</p>
-          <div className="space-y-2">
-            {activeRoleInfo.starters.map((prompt) => (
-              <button
-                key={prompt}
-                type="button"
-                disabled={isSending}
-                onClick={() => void sendMessage(prompt)}
-                className="w-full text-left px-3.5 py-2.5 text-xs text-slate-700 bg-slate-50 hover:bg-blue-50 hover:text-blue-800 border border-slate-200/80 rounded-xl transition-colors cursor-pointer disabled:opacity-50 leading-relaxed"
-              >
-                {prompt}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="pt-3 border-t border-slate-100 text-xs text-slate-500 leading-relaxed">
-          支持多轮上下文追问、录音听写转文字（说话即可发给私教），并且每句韩语示范都支持常速与 0.75x 慢速跟读。
-        </div>
+        )}
       </aside>
 
       {/* Right Column (8 cols): Full Scrollable Multi-Turn Conversation Thread */}

@@ -769,7 +769,32 @@ export function VocabGardenView({
                 </button>
               </div>
 
-                          </div>
+                            {/* Stage 4: 闪卡 */}
+              <div className="p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between gap-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-2 text-xs">
+                    <span className="font-semibold text-slate-700 flex items-center gap-1">
+                      <Layers className="w-3.5 h-3.5" aria-hidden="true" />
+                      闪卡
+                    </span>
+                    <span className="text-slate-500 tabular-nums font-medium">
+                      {todayDrawnCards.length || dailyPlan.dailyCount} 词
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    看韩想中 / 看中想韩 / 听音盲抽。
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  data-testid="launch-flashcard-today"
+                  onClick={() => launchStage('flashcard')}
+                  className="w-full py-2.5 px-3 text-xs font-semibold text-slate-800 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg transition-colors cursor-pointer"
+                >
+                  开始闪卡
+                </button>
+              </div>
+            </div>
 
               {/* Ebbinghaus Curve Summary Strip */}
             <div className="pt-4 border-t border-slate-100 grid grid-cols-2 lg:grid-cols-4 gap-4">

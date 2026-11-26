@@ -454,8 +454,8 @@ export function DailyVocabSession({
     },
     flashcard: {
       stepTag: '闪卡',
-      title: '闪卡抽背',
-      subtitle: '看韩想中、看中想韩、听音盲抽三种方向，点卡片或按空格翻面。',
+      title: '闪卡',
+      subtitle: '点卡片或按空格翻面。',
     },
   }[stage];
 

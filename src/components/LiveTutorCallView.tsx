@@ -627,12 +627,9 @@ export function LiveTutorCallView({
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            'AI 对话陪练'
+          <h1 className="text-lg sm:text-2xl font-bold text-slate-900 tracking-tight">
+            AI 对话陪练
           </h1>
-          <p className="text-sm text-slate-600 mt-1">
-            '多轮对话，支持朗读与词汇收藏。'
-          </p>
         </div>
       </div>
 

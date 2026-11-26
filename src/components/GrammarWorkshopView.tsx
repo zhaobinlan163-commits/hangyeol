@@ -93,6 +93,7 @@ export function GrammarWorkshopView({
 }: GrammarWorkshopViewProps) {
   const [levelFilter, setLevelFilter] = useState<GrammarLevelFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(ALL_GRAMMAR_LESSONS[0].id);
   const [sentenceInput, setSentenceInput] = useState('');
   const [showSample, setShowSample] = useState(false);
@@ -315,29 +316,46 @@ export function GrammarWorkshopView({
             })}
           </div>
 
-          {/* Grammar Search Box */}
-          <div className="relative">
-            <Search
-              className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-              aria-hidden="true"
-            />
-            <label htmlFor="grammar-search" className="sr-only">
-              搜索韩语语法或中文含义
-            </label>
-            <input
-              id="grammar-search"
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="搜索语法（如：-거든 / 因为 / 敬语）……"
-              className="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:border-blue-600"
-            />
+          {/* 搜索：默认只有一个图标 */}
+          <div className="flex items-center justify-end">
+            {searchOpen || searchQuery ? (
+              <div className="relative w-full">
+                <Search
+                  className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                  aria-hidden="true"
+                />
+                <label htmlFor="grammar-search" className="sr-only">
+                  搜索语法
+                </label>
+                <input
+                  id="grammar-search"
+                  type="text"
+                  autoFocus
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onBlur={() => {
+                    if (!searchQuery) setSearchOpen(false);
+                  }}
+                  placeholder="搜索语法"
+                  className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:border-blue-600"
+                />
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                aria-label="搜索语法"
+                className="p-1.5 rounded-md text-slate-500 hover:bg-slate-100 cursor-pointer"
+              >
+                <Search className="w-4 h-4" aria-hidden="true" />
+              </button>
+            )}
           </div>
 
           {filteredLessons.length === 0 ? (
             <p className="py-8 text-center text-xs text-slate-500">未找到匹配的语法条目。</p>
           ) : listMode === 'none' ? (
-            <p className="py-6 text-center text-xs text-slate-400">列表已收起，点上方「全部 / 一半」展开。</p>
+            <p className="py-1 text-[11px] text-slate-400">已收起</p>
           ) : (
             <ul className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto pr-1" data-testid="grammar-list">
               {visibleLessons.map((lesson, idx) => {

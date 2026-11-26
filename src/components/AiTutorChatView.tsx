@@ -34,7 +34,7 @@ const TUTOR_ROLES: Array<{
 }> = [
   {
     id: 'beginner_teacher',
-    label: '中国初学者韩语老师',
+    label: '初学老师',
     subtitle: '한결 선생님 · 中文细讲单词、语法与日常跟读',
     starters: [
       '老师好！去韩国咖啡店点一杯少冰美式，怎么说最地道？',
@@ -54,7 +54,7 @@ const TUTOR_ROLES: Array<{
   },
   {
     id: 'topik_coach',
-    label: 'TOPIK 备考教练',
+    label: '考试教练',
     subtitle: 'TOPIK I & II 高频词辨析、语法接续与写作提分',
     starters: [
       'TOPIK 2级里 필요하다 和 필요하다 前面为什么要用 이/가 而不是 을/를？',
@@ -235,51 +235,33 @@ export function AiTutorChatView({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-      {/* Left Column (4 cols): Tutor Role Selector */}
-      <aside className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 space-y-3">
-        <button
-          type="button"
-          onClick={() => setRolesOpen((v) => !v)}
-          aria-expanded={rolesOpen}
-          className="w-full flex items-center justify-between gap-2 text-left cursor-pointer"
-        >
-          <span className="text-xs font-semibold text-slate-600">
-            角色 · {activeRoleInfo.label}
-          </span>
-          <ChevronDown
-            className={`w-4 h-4 text-slate-400 transition-transform ${rolesOpen ? 'rotate-180' : ''}`}
-            aria-hidden="true"
-          />
-        </button>
-
-        {rolesOpen && (
-          <div className="space-y-2">
-            {TUTOR_ROLES.map((role) => {
-              const active = role.id === tutorRole;
-              return (
-                <button
-                  key={role.id}
-                  type="button"
-                  onClick={() => setTutorRole(role.id)}
-                  className={`w-full text-left p-3 rounded-xl border transition-colors cursor-pointer ${
-                    active
-                      ? 'border-blue-600 bg-blue-50/70'
-                      : 'border-slate-200 bg-white hover:border-slate-300'
-                  }`}
-                >
-                  <p className="text-sm font-semibold text-slate-900">{role.label}</p>
-                  <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">{role.subtitle}</p>
-                </button>
-              );
-            })}
-          </div>
-        )}
+      {/* 角色选择：一行三个 */}
+      <aside className="lg:col-span-12 bg-white border border-slate-200 rounded-xl p-2">
+        <div className="grid grid-cols-3 gap-1.5">
+          {TUTOR_ROLES.map((role) => {
+            const active = role.id === tutorRole;
+            return (
+              <button
+                key={role.id}
+                type="button"
+                onClick={() => setTutorRole(role.id)}
+                className={`py-2 text-xs font-semibold rounded-lg border transition-colors cursor-pointer ${
+                  active
+                    ? 'border-blue-600 bg-blue-50 text-blue-700'
+                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                }`}
+              >
+                {role.label}
+              </button>
+            );
+          })}
+        </div>
       </aside>
 
       {/* Right Column (8 cols): Full Scrollable Multi-Turn Conversation Thread */}
       <section
         aria-label="AI 韩语私教多轮对话"
-        className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl flex flex-col min-h-[560px] max-h-[720px]"
+        className="lg:col-span-12 bg-white border border-slate-200 rounded-2xl flex flex-col min-h-[420px] max-h-[720px]"
       >
         {/* Thread Header */}
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between gap-3 shrink-0">

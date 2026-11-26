@@ -959,7 +959,7 @@ export function DailyVocabSession({
           <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl space-y-2">
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
               <span className="font-semibold text-slate-700">
-                艾宾浩斯遗忘曲线节点 · {activeEbbinghausStatus?.stepLabel}
+                进度 · {activeEbbinghausStatus?.stepLabel}
               </span>
               <span
                 className={`font-medium ${

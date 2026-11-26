@@ -49,6 +49,13 @@ export function VideoAnalyzerView({
   } | null>(null);
 
   // Curated interactive playback state
+  const [lessonsOpen, setLessonsOpen] = useState<boolean>(() => {
+    try {
+      return window.matchMedia('(min-width: 1024px)').matches;
+    } catch {
+      return true;
+    }
+  });
   const [playerOpen, setPlayerOpen] = useState<boolean>(() => {
     try {
       return window.matchMedia('(min-width: 1024px)').matches;
@@ -782,8 +789,16 @@ export function VideoAnalyzerView({
 
           {/* Curated Video Lesson Switcher Strip */}
           <div className="space-y-3">
-            <h2 className="text-xs font-semibold text-slate-600">精选首尔实景精学片段（零延迟内置字幕解析）</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <button
+              type="button"
+              onClick={() => setLessonsOpen((v) => !v)}
+              aria-expanded={lessonsOpen}
+              className="w-full flex items-center justify-between gap-2 text-xs font-semibold text-slate-600 cursor-pointer"
+            >
+              精选片段
+              <span className="text-slate-400">{lessonsOpen ? '收起' : '展开'}</span>
+            </button>
+            <div className={`grid grid-cols-3 gap-2 ${lessonsOpen ? '' : 'hidden'}`}>
               {CURATED_VIDEO_LESSONS.map((lesson) => {
                 const isActive = !externalVideo && lesson.id === activeLesson.id;
                 return (

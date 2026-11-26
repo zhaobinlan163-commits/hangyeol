@@ -629,14 +629,12 @@ export function VocabGardenView({
                 </div>
 
                 <div className="flex items-center justify-between gap-2 pt-1">
-                  <span className="text-[11px] text-slate-500 flex items-center gap-1.5">
-                    <Volume2 className="w-3.5 h-3.5 text-slate-400" aria-hidden="true" />
-                    闪卡自动朗读
-                  </span>
                   <button
                     type="button"
                     role="switch"
                     aria-checked={autoSpeak}
+                    aria-label="自动朗读"
+                    title={autoSpeak ? '自动朗读：开' : '自动朗读：关'}
                     onClick={() => {
                       const next = !autoSpeak;
                       setAutoSpeak(next);
@@ -646,27 +644,26 @@ export function VocabGardenView({
                         // ignore
                       }
                     }}
-                    className={`px-2.5 py-1 text-[11px] font-semibold rounded-full border transition-colors cursor-pointer ${
+                    className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
                       autoSpeak
                         ? 'bg-blue-700 border-blue-700 text-white'
-                        : 'bg-white border-slate-300 text-slate-600 hover:bg-slate-50'
+                        : 'bg-white border-slate-300 text-slate-500 hover:bg-slate-50'
                     }`}
                   >
-                    {autoSpeak ? '已开启' : '已关闭'}
+                    <Volume2 className="w-3.5 h-3.5" aria-hidden="true" />
                   </button>
-                </div>
 
-                <div className="flex items-center justify-between gap-3 pt-1">
-                  <span className="text-[11px] text-slate-500 tabular-nums">
+                  <span className="text-[11px] text-slate-500 tabular-nums flex-1">
                     已抽 {todayDrawnCards.length}
                     {drawPoolMeta ? ` · 余 ${drawPoolMeta.remainingPoolCount}` : ''}
                   </span>
+
                   <button
                     type="button"
                     disabled={isDrawingDaily}
                     data-testid="draw-daily-words-btn"
                     onClick={() => void drawDailyTopikDeck(draftCount, draftLevel, true)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-blue-700 hover:bg-blue-800 disabled:bg-slate-400 rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-700 hover:bg-blue-800 disabled:bg-slate-400 rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
                   >
                     {isDrawingDaily ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
@@ -688,102 +685,54 @@ export function VocabGardenView({
               </div>
             </div>
 
-            {/* 3-Stage Memorization Pipeline + Flashcard Aid Cards */}
-            <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-              {/* Stage 1: Initial Learning + Confirmation Algorithm */}
-              <div className="p-3 sm:p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between gap-2.5 sm:gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between gap-2 text-xs">
-                    <span className="font-semibold text-blue-700 flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
-                      初学
-                    </span>
-                    <span className="text-slate-500 tabular-nums font-medium">
-                      {stage1ConfirmedTodayCount}/{todayDrawnCards.length || dailyPlan.dailyCount} 已确认
-                    </span>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  data-testid="launch-stage-learn"
-                  disabled={isDrawingDaily}
-                  onClick={() => launchStage('learn')}
-                  className="w-full py-2.5 px-3 text-xs font-semibold text-white bg-blue-700 hover:bg-blue-800 rounded-lg transition-colors cursor-pointer"
-                >
-                  {stage1ConfirmedTodayCount > 0 && stage1ConfirmedTodayCount < todayDrawnCards.length
-                    ? `继续 (剩 ${todayDrawnCards.length - stage1ConfirmedTodayCount})`
-                    : '开始初学'}
-                </button>
-              </div>
-
-              {/* Stage 2: Ebbinghaus Curve Review */}
-              <div className="p-3 sm:p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between gap-2.5 sm:gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between gap-2 text-xs">
-                    <span className="font-semibold text-amber-700 flex items-center gap-1">
-                      <TrendingUp className="w-3.5 h-3.5" aria-hidden="true" />
-                      复习
-                    </span>
-                    <span className="text-amber-700 tabular-nums font-semibold">
-                      {ebbinghausSummary.dueNowCount} 词待复习
-                    </span>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  data-testid="launch-stage-review"
-                  onClick={() => launchStage('review')}
-                  className="w-full py-2.5 px-3 text-xs font-semibold text-slate-900 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors cursor-pointer"
-                >
-                  开始复习
-                </button>
-              </div>
-
-              {/* Stage 3: Final Checkpoint Test */}
-              <div className="p-3 sm:p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between gap-2.5 sm:gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between gap-2 text-xs">
-                    <span className="font-semibold text-emerald-700 flex items-center gap-1">
-                      <ClipboardCheck className="w-3.5 h-3.5" aria-hidden="true" />巩固</span>
-                    <span className="text-slate-500 tabular-nums font-medium">
-                      {stage3PassedTodayCount}/{todayDrawnCards.length || dailyPlan.dailyCount} 通过
-                    </span>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  data-testid="launch-stage-check"
-                  onClick={() => launchStage('check')}
-                  className="w-full py-2.5 px-3 text-xs font-semibold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors cursor-pointer"
-                >
-                  开始巩固
-                </button>
-              </div>
-
-                            {/* Stage 4: 闪卡 */}
-              <div className="p-3 sm:p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between gap-2.5 sm:gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between gap-2 text-xs">
-                    <span className="font-semibold text-slate-700 flex items-center gap-1">
-                      <Layers className="w-3.5 h-3.5" aria-hidden="true" />
-                      闪卡
-                    </span>
-                    <span className="text-slate-500 tabular-nums font-medium">
-                      {todayDrawnCards.length || dailyPlan.dailyCount} 词
-                    </span>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  data-testid="launch-flashcard-today"
-                  onClick={() => launchStage('flashcard')}
-                  className="w-full py-2.5 px-3 text-xs font-semibold text-slate-800 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg transition-colors cursor-pointer"
-                >
-                  开始闪卡
-                </button>
-              </div>
+            {/* 四个环节：直接是可点的文字按钮 */}
+            <div className="grid grid-cols-4 gap-2">
+              <button
+                type="button"
+                data-testid="launch-stage-learn"
+                disabled={isDrawingDaily}
+                onClick={() => launchStage('learn')}
+                className="py-2 rounded-lg border border-slate-200 bg-white hover:border-blue-300 hover:text-blue-700 text-xs font-semibold text-slate-800 transition-colors cursor-pointer"
+              >
+                初学
+                <span className="block text-[10px] font-normal text-slate-500 tabular-nums">
+                  {stage1ConfirmedTodayCount}/{todayDrawnCards.length || dailyPlan.dailyCount}
+                </span>
+              </button>
+              <button
+                type="button"
+                data-testid="launch-stage-review"
+                onClick={() => launchStage('review')}
+                className="py-2 rounded-lg border border-slate-200 bg-white hover:border-amber-300 hover:text-amber-700 text-xs font-semibold text-slate-800 transition-colors cursor-pointer"
+              >
+                复习
+                <span className="block text-[10px] font-normal text-slate-500 tabular-nums">
+                  {ebbinghausSummary.dueNowCount}
+                </span>
+              </button>
+              <button
+                type="button"
+                data-testid="launch-stage-check"
+                onClick={() => launchStage('check')}
+                className="py-2 rounded-lg border border-slate-200 bg-white hover:border-emerald-300 hover:text-emerald-700 text-xs font-semibold text-slate-800 transition-colors cursor-pointer"
+              >
+                巩固
+                <span className="block text-[10px] font-normal text-slate-500 tabular-nums">
+                  {stage3PassedTodayCount}/{todayDrawnCards.length || dailyPlan.dailyCount}
+                </span>
+              </button>
+              <button
+                type="button"
+                data-testid="launch-flashcard-today"
+                onClick={() => launchStage('flashcard')}
+                className="py-2 rounded-lg border border-slate-200 bg-white hover:border-slate-400 hover:text-slate-900 text-xs font-semibold text-slate-800 transition-colors cursor-pointer"
+              >
+                闪卡
+                <span className="block text-[10px] font-normal text-slate-500 tabular-nums">
+                  {todayDrawnCards.length || dailyPlan.dailyCount}
+                </span>
+              </button>
             </div>
-
               {/* Ebbinghaus Curve Summary Strip */}
             <div className="hidden lg:grid pt-4 border-t border-slate-100 lg:grid-cols-4 gap-4">
               <div>
@@ -1288,7 +1237,7 @@ export function VocabGardenView({
                     <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl space-y-2.5">
                       <div className="flex items-center justify-between gap-2 text-xs">
                         <span className="font-semibold text-slate-700">
-                          艾宾浩斯进度 · {inspectedEbbinghaus.stepLabel}
+                          进度 · {inspectedEbbinghaus.stepLabel}
                         </span>
                         <span
                           className={`font-semibold ${

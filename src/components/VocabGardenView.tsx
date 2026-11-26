@@ -692,7 +692,7 @@ export function VocabGardenView({
                 data-testid="launch-stage-learn"
                 disabled={isDrawingDaily}
                 onClick={() => launchStage('learn')}
-                className="py-2 rounded-lg border border-slate-200 bg-white hover:border-blue-300 hover:text-blue-700 text-xs font-semibold text-slate-800 transition-colors cursor-pointer"
+                className="py-2 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold transition-colors cursor-pointer"
               >
                 初学
                 <span className="block text-[10px] font-normal text-slate-500 tabular-nums">
@@ -703,7 +703,7 @@ export function VocabGardenView({
                 type="button"
                 data-testid="launch-stage-review"
                 onClick={() => launchStage('review')}
-                className="py-2 rounded-lg border border-slate-200 bg-white hover:border-amber-300 hover:text-amber-700 text-xs font-semibold text-slate-800 transition-colors cursor-pointer"
+                className="py-2 rounded-lg border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-semibold transition-colors cursor-pointer"
               >
                 复习
                 <span className="block text-[10px] font-normal text-slate-500 tabular-nums">
@@ -714,7 +714,7 @@ export function VocabGardenView({
                 type="button"
                 data-testid="launch-stage-check"
                 onClick={() => launchStage('check')}
-                className="py-2 rounded-lg border border-slate-200 bg-white hover:border-emerald-300 hover:text-emerald-700 text-xs font-semibold text-slate-800 transition-colors cursor-pointer"
+                className="py-2 rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold transition-colors cursor-pointer"
               >
                 巩固
                 <span className="block text-[10px] font-normal text-slate-500 tabular-nums">
@@ -725,7 +725,7 @@ export function VocabGardenView({
                 type="button"
                 data-testid="launch-flashcard-today"
                 onClick={() => launchStage('flashcard')}
-                className="py-2 rounded-lg border border-slate-200 bg-white hover:border-slate-400 hover:text-slate-900 text-xs font-semibold text-slate-800 transition-colors cursor-pointer"
+                className="py-2 rounded-lg border border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
               >
                 闪卡
                 <span className="block text-[10px] font-normal text-slate-500 tabular-nums">

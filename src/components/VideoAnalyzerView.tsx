@@ -49,6 +49,7 @@ export function VideoAnalyzerView({
   } | null>(null);
 
   // Curated interactive playback state
+  const [importOpen, setImportOpen] = useState(false);
   const [lessonsOpen, setLessonsOpen] = useState<boolean>(() => {
     try {
       return window.matchMedia('(min-width: 1024px)').matches;
@@ -56,13 +57,7 @@ export function VideoAnalyzerView({
       return true;
     }
   });
-  const [playerOpen, setPlayerOpen] = useState<boolean>(() => {
-    try {
-      return window.matchMedia('(min-width: 1024px)').matches;
-    } catch {
-      return true;
-    }
-  });
+  const [playerOpen, setPlayerOpen] = useState<boolean>(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTimeSec, setCurrentTimeSec] = useState(0);
   const [playbackRate, setPlaybackRate] = useState<0.75 | 1>(1);
@@ -403,7 +398,22 @@ export function VideoAnalyzerView({
 
   return (
     <div className="space-y-6">
-      {/* Header & YouTube URL Loader */}
+      {/* 导入：默认收起，进来先看播放器 */}
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={() => setImportOpen((v) => !v)}
+          aria-expanded={importOpen}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg cursor-pointer"
+        >
+          导入
+          <span className="text-slate-400">{importOpen ? '收起' : '展开'}</span>
+        </button>
+      </div>
+
+      {importOpen && (
+        <>
+
       <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
@@ -605,6 +615,9 @@ export function VideoAnalyzerView({
           </form>
         )}
       </div>
+
+        </>
+      )}
 
       {/* Main Split Companion Stage: Left Video + Interactive Subtitles (7 cols) / Right Linguistic Inspector (5 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

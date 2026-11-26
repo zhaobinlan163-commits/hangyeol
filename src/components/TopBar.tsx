@@ -41,7 +41,7 @@ export function TopBar({
             height={26}
             className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg shadow-sm"
           />
-          <span className="hidden md:inline text-lg font-bold tracking-tight text-slate-900">
+          <span className="text-sm sm:text-lg font-bold tracking-tight text-slate-900">
             한결 HanGyeol
           </span>
         </button>

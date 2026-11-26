@@ -113,7 +113,7 @@ export default function App() {
             <span className="flex items-center gap-2 min-w-0">
               <KeyRound className="w-3.5 h-3.5 shrink-0 text-amber-700" aria-hidden="true" />
               <span className="break-words">
-                还差一把 DeepSeek API Key：填上之后 AI 陪练、语法造句、视频解析才能用。
+                填上 DeepSeek API Key 才能用 AI 功能。
               </span>
             </span>
             <button

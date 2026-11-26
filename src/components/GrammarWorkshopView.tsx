@@ -252,9 +252,6 @@ export function GrammarWorkshopView({
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
             语法工坊 · TOPIK 高频语法点
           </h1>
-          <p className="text-sm text-slate-600 mt-1">
-            收录 {ALL_GRAMMAR_LESSONS.length} 个高频语法点（TOPIK 1–6 级），含接续表、辨析、朗读例句与造句批改。
-          </p>
         </div>
         <p className="text-xs font-medium text-slate-600 tabular-nums shrink-0">
           已掌握语法：{masteredGrammarIds.length} / {ALL_GRAMMAR_LESSONS.length}

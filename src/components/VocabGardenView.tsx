@@ -536,7 +536,7 @@ export function VocabGardenView({
           {/* Daily TOPIK Quota Adjuster + 3-Stage Ebbinghaus Console */}
           <section
             aria-label="今日 TOPIK 每日背词计划"
-            className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 space-y-6"
+            className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-7 space-y-4 sm:space-y-6"
           >
             {/* Header + Adjustable Daily Quota Controls */}
             <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pb-6 border-b border-slate-100">
@@ -544,7 +544,7 @@ export function VocabGardenView({
                 <p className="text-xs font-medium text-blue-700 tabular-nums">
                   {dailyPlan.dateKey} · 连续打卡 {stats.streakDays} 天 · 按词表顺序学
                 </p>
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+                <h1 className="text-xl sm:text-3xl font-bold text-slate-900 tracking-tight">
                   每日任务
                 </h1>
                 <p className="text-sm text-slate-600 leading-relaxed">
@@ -691,7 +691,7 @@ export function VocabGardenView({
             {/* 3-Stage Memorization Pipeline + Flashcard Aid Cards */}
             <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
               {/* Stage 1: Initial Learning + Confirmation Algorithm */}
-              <div className="p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between gap-4">
+              <div className="p-3 sm:p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between gap-2.5 sm:gap-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2 text-xs">
                     <span className="font-semibold text-blue-700 flex items-center gap-1">
@@ -702,9 +702,6 @@ export function VocabGardenView({
                       {stage1ConfirmedTodayCount}/{todayDrawnCards.length || dailyPlan.dailyCount} 已确认
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    认词后立刻检验，错的进复习。
-                  </p>
                 </div>
                 <button
                   type="button"
@@ -720,7 +717,7 @@ export function VocabGardenView({
               </div>
 
               {/* Stage 2: Ebbinghaus Curve Review */}
-              <div className="p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between gap-4">
+              <div className="p-3 sm:p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between gap-2.5 sm:gap-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2 text-xs">
                     <span className="font-semibold text-amber-700 flex items-center gap-1">
@@ -731,9 +728,6 @@ export function VocabGardenView({
                       {ebbinghausSummary.dueNowCount} 词待复习
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    先复习 {ebbinghausSummary.forgottenCount} 个错词和到期词。
-                  </p>
                 </div>
                 <button
                   type="button"
@@ -746,7 +740,7 @@ export function VocabGardenView({
               </div>
 
               {/* Stage 3: Final Checkpoint Test */}
-              <div className="p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between gap-4">
+              <div className="p-3 sm:p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between gap-2.5 sm:gap-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2 text-xs">
                     <span className="font-semibold text-emerald-700 flex items-center gap-1">
@@ -755,9 +749,6 @@ export function VocabGardenView({
                       {stage3PassedTodayCount}/{todayDrawnCards.length || dailyPlan.dailyCount} 通过
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    不看提示抽测，错的回到复习。
-                  </p>
                 </div>
                 <button
                   type="button"
@@ -770,7 +761,7 @@ export function VocabGardenView({
               </div>
 
                             {/* Stage 4: 闪卡 */}
-              <div className="p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between gap-4">
+              <div className="p-3 sm:p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between gap-2.5 sm:gap-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2 text-xs">
                     <span className="font-semibold text-slate-700 flex items-center gap-1">
@@ -781,9 +772,6 @@ export function VocabGardenView({
                       {todayDrawnCards.length || dailyPlan.dailyCount} 词
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    看韩想中 / 看中想韩 / 听音盲抽。
-                  </p>
                 </div>
                 <button
                   type="button"

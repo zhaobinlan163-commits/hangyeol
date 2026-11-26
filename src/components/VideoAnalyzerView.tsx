@@ -403,9 +403,6 @@ export function VideoAnalyzerView({
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
               视频辅助伴学
             </h1>
-            <p className="text-sm text-slate-600 mt-1">
-              边看边逐句拆解单词、助记与语法，生词一键存进词库。
-            </p>
           </div>
 
           <button

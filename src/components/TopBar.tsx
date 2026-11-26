@@ -1,4 +1,5 @@
-﻿import { Settings } from 'lucide-react';
+import { useState } from 'react';
+import { Menu, Settings } from 'lucide-react';
 import type { ActiveTab } from '../types/learning';
 
 interface TopBarProps {
@@ -24,6 +25,7 @@ export function TopBar({
   onOpenSettings,
   dueCount,
 }: TopBarProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 sm:gap-8">
@@ -75,7 +77,16 @@ export function TopBar({
         </nav>
 
         {/* Zone 3: Single primary action */}
-        <div className="flex items-center shrink-0 gap-2">
+        <div className="flex items-center shrink-0 gap-1.5 sm:gap-2">
+          <button
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="打开导航菜单"
+            aria-expanded={menuOpen}
+            className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+          >
+            <Menu className="w-5 h-5" aria-hidden="true" />
+          </button>
           <button
             type="button"
             onClick={onOpenSettings}
@@ -95,30 +106,32 @@ export function TopBar({
         </div>
       </div>
 
-      {/* Compact single-row mobile navigation (<= 44px height) */}
-      <nav
-        aria-label="移动端主导航"
-        className="flex md:hidden items-center gap-0.5 border-t border-slate-100 px-1 bg-white overflow-x-auto"
-      >
-        {NAV_ITEMS.map((item) => {
-          const isActive = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              aria-current={isActive ? 'page' : undefined}
-              onClick={() => onSelectTab(item.id)}
-              className={`min-h-[44px] flex-1 px-1 text-[11px] font-medium whitespace-nowrap shrink-0 border-b-2 transition-colors ${
-                isActive
-                  ? 'border-blue-700 text-blue-700 font-semibold'
-                  : 'border-transparent text-slate-600'
-              }`}
-            >
-              {item.label}
-            </button>
-          );
-        })}
-      </nav>
+      {/* 手机上默认收起的导航菜单 */}
+      {menuOpen && (
+        <nav aria-label="移动端主导航" className="md:hidden border-t border-slate-100 bg-white px-2 py-1">
+          {NAV_ITEMS.map((item) => {
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                aria-current={isActive ? 'page' : undefined}
+                onClick={() => {
+                  onSelectTab(item.id);
+                  setMenuOpen(false);
+                }}
+                className={`w-full text-left px-3 py-2.5 text-sm rounded-lg transition-colors cursor-pointer ${
+                  isActive
+                    ? 'bg-blue-50 text-blue-700 font-semibold'
+                    : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
+        </nav>
+      )}
     </header>
   );
 }

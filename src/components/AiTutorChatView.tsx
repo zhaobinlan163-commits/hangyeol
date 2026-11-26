@@ -306,11 +306,8 @@ export function AiTutorChatView({
         >
           {messages.length === 0 ? (
             <div className="py-10 space-y-4 max-w-lg">
-              <p className="text-base font-semibold text-slate-900">
-                你好！我是你的专属韩语 AI 私教
-              </p>
               <p className="text-sm text-slate-600 leading-relaxed">
-                你可以直接用中文问语法、贴一句韩语让我润色、练 TOPIK 辨析，或者点击右下角麦克风把你说的话直接听写发给我。每一轮回复都会保留上下文，并自动拆解可跟读的韩语句子与核心单词。
+                直接问，或贴一句韩语让我改写。我会给出可跟读的句子和语法要点。
               </p>
             </div>
           ) : (
@@ -328,7 +325,9 @@ export function AiTutorChatView({
                       : 'bg-slate-50 border border-slate-200/80 text-slate-900'
                   }`}
                 >
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+                  {msg.role === 'user' && (
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+                  )}
 
                   {/* Structured Korean Sentences with Read-Aloud Buttons */}
                   {msg.structured?.koreanSentences &&
@@ -443,18 +442,6 @@ export function AiTutorChatView({
                   )}
 
                   {/* Clickable Follow-up Prompt */}
-                  {msg.structured?.followUpPrompt && (
-                    <div className="pt-2 border-t border-slate-200/70">
-                      <button
-                        type="button"
-                        disabled={isSending}
-                        onClick={() => void sendMessage(msg.structured!.followUpPrompt)}
-                        className="text-xs text-blue-700 hover:underline text-left cursor-pointer"
-                      >
-                        继续追问：{msg.structured.followUpPrompt}
-                      </button>
-                    </div>
-                  )}
                 </div>
               </div>
             ))

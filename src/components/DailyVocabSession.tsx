@@ -535,19 +535,38 @@ export function DailyVocabSession({
         >
           {/* Card Header Metadata */}
           <div className="px-5 py-3.5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap min-w-0">
               <span className="font-semibold text-blue-700">
                 {activeCard.topikLevel || 'TOPIK 核心'}
               </span>
               <span aria-hidden="true">·</span>
               <span>{activeCard.pos}</span>
-              <span aria-hidden="true">·</span>
-              <GrowthStageIcon stage={activeCard.stage} />
-              {activeCard.isForgotten && (
-                <>
-                  <span aria-hidden="true">·</span>
-                  <span className="font-semibold text-rose-700">曾记为没记住</span>
-                </>
+              <span className="font-semibold text-slate-900 tabular-nums ml-1">
+                {stage === 'learn'
+                  ? `${learnState.confirmedIds.length}/${totalUniqueWords}`
+                  : `${Math.min(currentIdx + 1, queueIds.length)}/${queueIds.length}`}
+              </span>
+              {(stage === 'review' || stage === 'flashcard') && (
+                <span className="flex items-center gap-1">
+                  {EBBINGHAUS_STEPS.map((node) => {
+                    const isCurrent = node.step === activeStepIndex;
+                    const isReached = node.step < activeStepIndex;
+                    return (
+                      <span
+                        key={node.step}
+                        className={`h-1.5 w-1.5 rounded-full ${
+                          isCurrent
+                            ? activeCard.isForgotten
+                              ? 'bg-rose-500'
+                              : 'bg-blue-600'
+                            : isReached
+                            ? 'bg-emerald-400'
+                            : 'bg-slate-200'
+                        }`}
+                      />
+                    );
+                  })}
+                </span>
               )}
             </div>
             <button
@@ -557,7 +576,7 @@ export function DailyVocabSession({
               className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-md cursor-pointer whitespace-nowrap shrink-0"
             >
               <Eye className="w-3.5 h-3.5" aria-hidden="true" />
-              {isFlipped ? '翻回正面 (Space)' : '翻转看释义与助记 (Space)'}
+              {isFlipped ? '翻回' : '翻转'}
             </button>
           </div>
 
@@ -664,10 +683,6 @@ export function DailyVocabSession({
                     </button>
                   </div>
                 )}
-
-                <p className="text-xs text-slate-400 pt-2">
-                  点击卡片任意空白处或按空格键翻转查看答案与助记
-                </p>
               </div>
             ) : (
               <div className="space-y-3 sm:space-y-5 min-w-0" onClick={(e) => e.stopPropagation()}>
@@ -906,37 +921,6 @@ export function DailyVocabSession({
               下一个
               <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
-          </div>
-        )}
-
-        {/* 进度：只有数字 */}
-        <div className="text-xs font-semibold text-slate-900 tabular-nums">
-          {stage === 'learn'
-            ? `${learnState.confirmedIds.length}/${totalUniqueWords}`
-            : `${Math.min(currentIdx + 1, queueIds.length)}/${queueIds.length}`}
-        </div>
-
-        {/* 进度节点：几个圆点 */}
-        {!sessionDone && activeCard && (stage === 'review' || stage === 'flashcard') && (
-          <div className="flex items-center gap-1.5">
-            {EBBINGHAUS_STEPS.map((node) => {
-              const isCurrent = node.step === activeStepIndex;
-              const isReached = node.step < activeStepIndex;
-              return (
-                <span
-                  key={node.step}
-                  className={`h-1.5 w-1.5 rounded-full ${
-                    isCurrent
-                      ? activeCard.isForgotten
-                        ? 'bg-rose-500'
-                        : 'bg-blue-600'
-                      : isReached
-                      ? 'bg-emerald-400'
-                      : 'bg-slate-200'
-                  }`}
-                />
-              );
-            })}
           </div>
         )}
 

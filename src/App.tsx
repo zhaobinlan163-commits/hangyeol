@@ -186,7 +186,7 @@ export default function App() {
         </div>
       )}
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-7 sm:py-9">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-5">
         {activeTab === 'vocab' && (
           <VocabGardenView
             cards={vocabCards}

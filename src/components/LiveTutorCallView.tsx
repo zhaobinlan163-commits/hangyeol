@@ -624,7 +624,7 @@ export function LiveTutorCallView({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-lg sm:text-2xl font-bold text-slate-900 tracking-tight">
@@ -646,9 +646,9 @@ export function LiveTutorCallView({
           onActivityComplete={onActivityComplete}
         />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
           {/* Left Zone (5 cols): Voice Call Console & Topic Setup */}
-          <section aria-label="语音陪练控制台" className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-6 space-y-6">
+          <section aria-label="语音陪练控制台" className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-6 space-y-3">
             <div className="space-y-2.5">
               <p className="text-xs font-semibold text-slate-600">选择本通电话的练习主题</p>
               <div className="space-y-2">
@@ -896,7 +896,7 @@ export function LiveTutorCallView({
           </section>
 
           {/* Right Zone (7 cols): Live Bilingual Transcript + Instant Word/Grammar Sheet */}
-          <section aria-label="实时对话记录与词汇语法拆解" className="lg:col-span-7 space-y-6">
+          <section aria-label="实时对话记录与词汇语法拆解" className="lg:col-span-7 space-y-3">
             <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
               <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
                 <h2 className="text-sm font-semibold text-slate-900">实时语音双语字幕板</h2>

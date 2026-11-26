@@ -473,7 +473,7 @@ export function VocabGardenView({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Top 2-Mode Switcher: Daily Plan & Garden vs 4,056-Word Official TOPIK Book */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div
@@ -532,14 +532,14 @@ export function VocabGardenView({
           onSwitchToGarden={() => setSubView('garden')}
         />
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-3">
           {/* Daily TOPIK Quota Adjuster + 3-Stage Ebbinghaus Console */}
           <section
             aria-label="今日 TOPIK 每日背词计划"
-            className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-7 space-y-4 sm:space-y-6"
+            className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-7 space-y-4 sm:space-y-3"
           >
             {/* Header + Adjustable Daily Quota Controls */}
-            <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pb-6 border-b border-slate-100">
+            <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-3 pb-6 border-b border-slate-100">
               <div className="space-y-2 max-w-xl">
                 <p className="text-xs font-medium text-blue-700 tabular-nums">
                   {dailyPlan.dateKey} · 连续打卡 {stats.streakDays} 天 · 按词表顺序学
@@ -774,7 +774,7 @@ export function VocabGardenView({
           />
 
           {/* Two-Zone Wordbook & Inspector */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
             {/* Left Zone: Filterable Vocab List (7 cols) */}
             <section
               aria-label="词汇列表"

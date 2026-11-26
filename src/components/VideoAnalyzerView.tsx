@@ -397,20 +397,7 @@ export function VideoAnalyzerView({
   const activeCue = activeCues.find((c) => c.id === activeCueId) ?? activeCues[0] ?? null;
 
   return (
-    <div className="space-y-6">
-      {/* 导入：默认收起，进来先看播放器 */}
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={() => setImportOpen((v) => !v)}
-          aria-expanded={importOpen}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg cursor-pointer"
-        >
-          导入
-          <span className="text-slate-400">{importOpen ? '收起' : '展开'}</span>
-        </button>
-      </div>
-
+    <div className="space-y-3">
       {importOpen && (
         <>
 
@@ -620,19 +607,30 @@ export function VideoAnalyzerView({
       )}
 
       {/* Main Split Companion Stage: Left Video + Interactive Subtitles (7 cols) / Right Linguistic Inspector (5 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
         {/* Left Zone: Player & Synced Interactive Transcript */}
         <section aria-label="视频播放与互动字幕" className="lg:col-span-7 space-y-5">
           {/* Player Container */}
-          <button
-            type="button"
-            onClick={() => setPlayerOpen((v) => !v)}
-            aria-expanded={playerOpen}
-            className="lg:hidden w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 cursor-pointer"
-          >
-            视频播放器
-            <span className="text-slate-400">{playerOpen ? '收起' : '展开'}</span>
-          </button>
+          <div className="flex items-center justify-between gap-2">
+            <button
+              type="button"
+              onClick={() => setPlayerOpen((v) => !v)}
+              aria-expanded={playerOpen}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg cursor-pointer"
+            >
+              播放器
+              <span className="text-slate-400">{playerOpen ? '收起' : '展开'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setImportOpen((v) => !v)}
+              aria-expanded={importOpen}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg cursor-pointer"
+            >
+              导入
+              <span className="text-slate-400">{importOpen ? '收起' : '展开'}</span>
+            </button>
+          </div>
           <div
             className={`bg-white border border-slate-200 rounded-2xl overflow-hidden ${
               playerOpen ? '' : 'hidden lg:block'
@@ -847,7 +845,7 @@ export function VideoAnalyzerView({
         {/* Right Zone: Real-Time Linguistic Inspector (Memrise Vocab + Grammar Breakdown) */}
         <aside
           aria-label="台词词汇与语法实时解析面板"
-          className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-6 space-y-6 lg:sticky lg:top-24"
+          className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-6 space-y-3 lg:sticky lg:top-24"
         >
           {isParsing ? (
             <div className="py-16 flex flex-col items-center justify-center text-center gap-3">

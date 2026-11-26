@@ -58,7 +58,7 @@ export function NotesView({ notes, onCreate, onUpdate, onDelete, focusNoteId }: 
   }, [sorted, query, activeTag]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
           <NotebookPen className="w-5 h-5 text-blue-700" aria-hidden="true" />

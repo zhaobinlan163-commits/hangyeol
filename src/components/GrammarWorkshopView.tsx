@@ -103,7 +103,7 @@ export function GrammarWorkshopView({
   const [askInput, setAskInput] = useState('');
   const [isAsking, setIsAsking] = useState(false);
   const [askError, setAskError] = useState<string | null>(null);
-  const [listMode, setListMode] = useState<'all' | 'half' | 'none'>('half');
+  const [listMode, setListMode] = useState<'all' | 'six' | 'none'>('six');
   const [askLog, setAskLog] = useState<GrammarAskTurn[]>([]);
   const [savedTurns, setSavedTurns] = useState<number[]>([]);
 
@@ -137,8 +137,8 @@ export function GrammarWorkshopView({
   const visibleLessons =
     listMode === 'all'
       ? filteredLessons
-      : listMode === 'half'
-      ? filteredLessons.slice(0, Math.max(6, Math.ceil(filteredLessons.length / 2)))
+      : listMode === 'six'
+      ? filteredLessons.slice(0, 6)
       : [];
 
   const activeLesson =
@@ -247,10 +247,10 @@ export function GrammarWorkshopView({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-lg sm:text-2xl font-bold text-slate-900 tracking-tight">
             语法工坊 · TOPIK 高频语法点
           </h1>
         </div>
@@ -259,7 +259,7 @@ export function GrammarWorkshopView({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
         {/* Left Syllabus Column (4 cols) */}
         <aside aria-label="TOPIK 语法目录" className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-4 space-y-3">
           <div className="flex items-center justify-between gap-2 px-1">
@@ -269,9 +269,9 @@ export function GrammarWorkshopView({
             <div className="inline-flex items-center gap-1 p-0.5 bg-slate-100 rounded-lg">
               {([
                 ['all', '全部'],
-                ['half', '一半'],
+                ['six', '6 条'],
                 ['none', '收起'],
-              ] as Array<['all' | 'half' | 'none', string]>).map(([mode, label]) => (
+              ] as Array<['all' | 'six' | 'none', string]>).map(([mode, label]) => (
                 <button
                   key={mode}
                   type="button"
@@ -354,8 +354,6 @@ export function GrammarWorkshopView({
 
           {filteredLessons.length === 0 ? (
             <p className="py-8 text-center text-xs text-slate-500">未找到匹配的语法条目。</p>
-          ) : listMode === 'none' ? (
-            <p className="py-1 text-[11px] text-slate-400">已收起</p>
           ) : (
             <ul className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto pr-1" data-testid="grammar-list">
               {visibleLessons.map((lesson, idx) => {
@@ -408,9 +406,9 @@ export function GrammarWorkshopView({
         </aside>
 
         {/* Right Detail & Interactive Sentence Composition (8 cols) */}
-        <section aria-label="语法讲解与造句练习" className="lg:col-span-8 space-y-6">
+        <section aria-label="语法讲解与造句练习" className="lg:col-span-8 space-y-3">
           {/* Grammar Explanation Card */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-6">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-3">
             <div className="space-y-2 pb-4 border-b border-slate-100">
               <p className="text-xs text-blue-700 font-medium">{activeLesson.level}</p>
               <div className="flex flex-wrap items-baseline gap-3">

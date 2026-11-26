@@ -441,22 +441,22 @@ export function DailyVocabSession({
     learn: {
       stepTag: '初学',
       title: '初学 · 认词与确认',
-      subtitle: '先看闪卡记发音和意思，再主动检验；选错会自动记为「没记住」并重新抽测。',
+      subtitle: '',
     },
     review: {
       stepTag: '复习',
       title: '复习 · 到点回看',
-      subtitle: '优先复习「没记住」和到期的词，间隔 5分→30分→12时→1天→2天→4天→7天→15天→30天。',
+      subtitle: '',
     },
     check: {
       stepTag: '巩固',
       title: '巩固 · 不看提示抽测',
-      subtitle: '不看提示抽测今天的词；错的自动记为「没记住」，下次优先复习。',
+      subtitle: '',
     },
     flashcard: {
       stepTag: '闪卡',
       title: '闪卡',
-      subtitle: '点卡片或按空格翻面。',
+      subtitle: '',
     },
   }[stage];
 
@@ -573,7 +573,7 @@ export function DailyVocabSession({
                 setIsFlipped((v) => !v);
               }
             }}
-            className="p-4 sm:p-8 cursor-pointer select-none min-h-[190px] max-h-[260px] sm:max-h-none sm:min-h-[220px] flex flex-col justify-between gap-3 sm:gap-6"
+            className="p-3 sm:p-8 cursor-pointer select-none min-h-[170px] sm:min-h-[220px] flex flex-col justify-between gap-2 sm:gap-6"
           >
             {!isFlipped ? (
               <div className="flex flex-col items-center justify-center text-center py-6 space-y-4">
@@ -597,7 +597,7 @@ export function DailyVocabSession({
                     <p className="text-xs font-medium text-slate-500">
                       看中文想韩文 · 先在脑中拼出韩语与发音
                     </p>
-                    <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">
+                    <h2 className="text-2xl sm:text-4xl font-bold text-slate-900 break-words">
                       {activeCard.meaningZh}
                     </h2>
                     <p className="text-xs text-slate-500">
@@ -670,10 +670,10 @@ export function DailyVocabSession({
                 </p>
               </div>
             ) : (
-              <div className="space-y-5" onClick={(e) => e.stopPropagation()}>
+              <div className="space-y-3 sm:space-y-5 min-w-0" onClick={(e) => e.stopPropagation()}>
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
-                    <h2 className="font-kr text-3xl font-bold text-slate-900">
+                    <h2 className="font-kr text-2xl sm:text-3xl font-bold text-slate-900 break-words">
                       {activeCard.korean}
                     </h2>
                     <p className="font-mono-tabular text-sm text-blue-700 mt-1">
@@ -703,12 +703,12 @@ export function DailyVocabSession({
                 <div className="pt-3 border-t border-slate-200/80 space-y-3.5">
                   <div>
                     <p className="text-xs text-slate-500 mb-0.5">中文核心释义</p>
-                    <p className="text-xl font-bold text-slate-900">{activeCard.meaningZh}</p>
+                    <p className="text-lg sm:text-xl font-bold text-slate-900 break-words">{activeCard.meaningZh}</p>
                   </div>
 
                   <div className="p-3.5 bg-white rounded-xl border border-slate-200/80">
                     <p className="text-xs font-semibold text-slate-600 mb-1">记忆助记法 (Mem)</p>
-                    <p className="text-sm text-slate-800 leading-relaxed">{activeCard.memriseTip}</p>
+                    <p className="text-xs sm:text-sm text-slate-800 leading-relaxed break-words">{activeCard.memriseTip}</p>
                   </div>
 
                   <div>
@@ -826,7 +826,7 @@ export function DailyVocabSession({
           <div className="min-w-0 flex-1 space-y-1">
             <p className="hidden sm:block text-xs font-semibold text-blue-700">{stageMeta.stepTag}</p>
             <h1 className="text-base sm:text-2xl font-bold text-slate-900 truncate">{stageMeta.title}</h1>
-            <p className="hidden sm:block text-xs text-slate-500 leading-relaxed">{stageMeta.subtitle}</p>
+
           </div>
           <div className="flex items-center gap-1.5 shrink-0 justify-end">
             {onToggleAutoSpeak && (
@@ -909,20 +909,11 @@ export function DailyVocabSession({
           </div>
         )}
 
-        {/* 进度：数字 + 细进度条同一行 */}
-        <div className="flex items-center gap-2 text-xs text-slate-600 tabular-nums">
-          <span className="font-semibold text-slate-900 shrink-0">
-            {stage === 'learn'
-              ? `${learnState.confirmedIds.length}/${totalUniqueWords}`
-              : `${Math.min(currentIdx + 1, queueIds.length)}/${queueIds.length}`}
-          </span>
-          <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-blue-700 transition-all duration-300"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
-          <span className="font-semibold text-blue-700 shrink-0">{progressPercent}%</span>
+        {/* 进度：只有数字 */}
+        <div className="text-xs font-semibold text-slate-900 tabular-nums">
+          {stage === 'learn'
+            ? `${learnState.confirmedIds.length}/${totalUniqueWords}`
+            : `${Math.min(currentIdx + 1, queueIds.length)}/${queueIds.length}`}
         </div>
 
         {/* 进度节点：几个圆点 */}
@@ -934,13 +925,13 @@ export function DailyVocabSession({
               return (
                 <span
                   key={node.step}
-                  className={`h-1.5 flex-1 rounded-full ${
+                  className={`h-1.5 w-1.5 rounded-full ${
                     isCurrent
                       ? activeCard.isForgotten
                         ? 'bg-rose-500'
                         : 'bg-blue-600'
                       : isReached
-                      ? 'bg-emerald-300'
+                      ? 'bg-emerald-400'
                       : 'bg-slate-200'
                   }`}
                 />

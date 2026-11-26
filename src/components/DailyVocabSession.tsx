@@ -296,8 +296,8 @@ export function DailyVocabSession({
       setFeedback({
         status: outcome,
         title: isMastered
-          ? `「${activeCard.korean}」已掌握 · 下次复习 ${nextIntervalLabel}`
-          : `「${activeCard.korean}」没记住 · 稍后重学`,
+          ? `下次复习：${nextIntervalLabel}后`
+          : '没记住 · 稍后重学',
         detail: '',
         requeued: !isMastered,
       });
@@ -313,10 +313,10 @@ export function DailyVocabSession({
         status: outcome,
         title:
           outcome === 'remembered'
-            ? `「${activeCard.korean}」已掌握 · 下次复习 ${nextIntervalLabel}`
+            ? `下次复习：${nextIntervalLabel}后`
             : outcome === 'vague'
-            ? `「${activeCard.korean}」模糊 · 30 分钟后复习`
-            : `「${activeCard.korean}」没记住 · 5 分钟后复习`,
+            ? '模糊 · 30 分钟后复习'
+            : '没记住 · 5 分钟后复习',
         detail: '',
         requeued: requeueReview,
       });
@@ -328,8 +328,8 @@ export function DailyVocabSession({
       status: outcome,
       title:
         outcome === 'remembered'
-          ? `「${activeCard.korean}」已掌握 · 下次复习 ${nextIntervalLabel}`
-          : `「${activeCard.korean}」没记住 · 5 分钟后复习`,
+          ? `下次复习：${nextIntervalLabel}后`
+          : '没记住 · 5 分钟后复习',
       detail: '',
     });
   };
@@ -573,7 +573,7 @@ export function DailyVocabSession({
                 setIsFlipped((v) => !v);
               }
             }}
-            className="p-4 sm:p-8 cursor-pointer select-none aspect-[4/3] sm:aspect-auto sm:min-h-[220px] flex flex-col justify-between gap-3 sm:gap-6"
+            className="p-4 sm:p-8 cursor-pointer select-none min-h-[190px] max-h-[260px] sm:max-h-none sm:min-h-[220px] flex flex-col justify-between gap-3 sm:gap-6"
           >
             {!isFlipped ? (
               <div className="flex flex-col items-center justify-center text-center py-6 space-y-4">
@@ -764,11 +764,6 @@ export function DailyVocabSession({
               </>
             ) : (
               <div className="w-full space-y-2">
-                {!isFlipped && (
-                  <p className="text-xs text-slate-500 text-center">
-                    建议先点击卡片翻转核对答案，再选择掌握程度（系统将自动按艾宾浩斯曲线排期）
-                  </p>
-                )}
                 <div className="grid grid-cols-3 gap-2.5">
                   <button
                     type="button"
@@ -914,98 +909,43 @@ export function DailyVocabSession({
           </div>
         )}
 
-        {/* Live Progress Strip */}
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 tabular-nums">
-            {stage === 'learn' ? (
-              <div className="flex items-center gap-3 flex-wrap">
-                <span className="font-semibold text-slate-900">
-                  已确认学会 {learnState.confirmedIds.length} / {totalUniqueWords} 词
-                </span>
-                <span aria-hidden="true">·</span>
-                <span>剩余待确认 {learnState.pendingIds.length} 词</span>
-                {learnState.forgottenIds.length > 0 && (
-                  <>
-                    <span aria-hidden="true">·</span>
-                    <span className="font-semibold text-rose-700 inline-flex items-center gap-0.5">
-                      <X className="w-3.5 h-3.5" aria-hidden="true" />
-                      {learnState.forgottenIds.length}
-                    </span>
-                  </>
-                )}
-              </div>
-            ) : (
-              <div className="flex items-center gap-3 flex-wrap">
-                <span className="font-semibold text-slate-900">
-                  当前进度 {Math.min(currentIdx + 1, queueIds.length)} / {queueIds.length}
-                </span>
-                <span aria-hidden="true">·</span>
-                <span className="text-emerald-700 font-medium inline-flex items-center gap-0.5">
-                  <Check className="w-3.5 h-3.5" aria-hidden="true" />
-                  {passedIds.length}
-                </span>
-                {forgottenIds.length > 0 && (
-                  <>
-                    <span aria-hidden="true">·</span>
-                    <span className="text-rose-700 font-medium inline-flex items-center gap-0.5">
-                      <X className="w-3.5 h-3.5" aria-hidden="true" />
-                      {forgottenIds.length}
-                    </span>
-                  </>
-                )}
-              </div>
-            )}
-            <span className="font-semibold text-blue-700">{progressPercent}%</span>
-          </div>
-          <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+        {/* 进度：数字 + 细进度条同一行 */}
+        <div className="flex items-center gap-2 text-xs text-slate-600 tabular-nums">
+          <span className="font-semibold text-slate-900 shrink-0">
+            {stage === 'learn'
+              ? `${learnState.confirmedIds.length}/${totalUniqueWords}`
+              : `${Math.min(currentIdx + 1, queueIds.length)}/${queueIds.length}`}
+          </span>
+          <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
             <div
               className="h-full bg-blue-700 transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
+          <span className="font-semibold text-blue-700 shrink-0">{progressPercent}%</span>
         </div>
 
-        {/* Ebbinghaus Curve Node Indicator (Shown in Stage 2 Review & Flashcard) */}
+        {/* 进度节点：几个圆点 */}
         {!sessionDone && activeCard && (stage === 'review' || stage === 'flashcard') && (
-          <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl space-y-2">
-            <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-              <span className="font-semibold text-slate-700">
-                进度 · {activeEbbinghausStatus?.stepLabel}
-              </span>
-              <span
-                className={`font-medium ${
-                  activeEbbinghausStatus?.isForgotten
-                    ? 'text-rose-700'
-                    : activeEbbinghausStatus?.isDue
-                    ? 'text-amber-700'
-                    : 'text-emerald-700'
-                }`}
-              >
-                {activeEbbinghausStatus?.nextReviewText}
-              </span>
-            </div>
-            <div className="grid grid-cols-9 gap-1">
-              {EBBINGHAUS_STEPS.map((node) => {
-                const isCurrent = node.step === activeStepIndex;
-                const isReached = node.step < activeStepIndex;
-                return (
-                  <div
-                    key={node.step}
-                    className={`text-center py-1 rounded text-[11px] font-medium tabular-nums border ${
-                      isCurrent
-                        ? activeCard.isForgotten
-                          ? 'bg-rose-600 text-white border-rose-600 font-semibold'
-                          : 'bg-blue-700 text-white border-blue-700 font-semibold'
-                        : isReached
-                        ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                        : 'bg-white text-slate-500 border-slate-200'
-                    }`}
-                  >
-                    {node.shortLabel}
-                  </div>
-                );
-              })}
-            </div>
+          <div className="flex items-center gap-1.5">
+            {EBBINGHAUS_STEPS.map((node) => {
+              const isCurrent = node.step === activeStepIndex;
+              const isReached = node.step < activeStepIndex;
+              return (
+                <span
+                  key={node.step}
+                  className={`h-1.5 flex-1 rounded-full ${
+                    isCurrent
+                      ? activeCard.isForgotten
+                        ? 'bg-rose-500'
+                        : 'bg-blue-600'
+                      : isReached
+                      ? 'bg-emerald-300'
+                      : 'bg-slate-200'
+                  }`}
+                />
+              );
+            })}
           </div>
         )}
 
@@ -1338,7 +1278,7 @@ export function DailyVocabSession({
               <div
                 role="status"
                 data-testid="session-feedback-banner"
-                className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                className={`p-2.5 rounded-xl border flex items-center justify-between gap-3 ${
                   feedback.status === 'remembered'
                     ? 'bg-emerald-50 border-emerald-200 text-emerald-950'
                     : feedback.status === 'vague'
@@ -1354,7 +1294,7 @@ export function DailyVocabSession({
                   ) : (
                     <X className="w-4 h-4 shrink-0 text-rose-700" aria-hidden="true" />
                   )}
-                  <p className="text-sm font-semibold break-keep">{feedback.title}</p>
+                  <p className="text-xs sm:text-sm font-semibold break-keep">{feedback.title}</p>
                 </div>
                 <button
                   type="button"

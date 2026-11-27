@@ -294,15 +294,8 @@ export function VocabGardenView({
       }
 
       if (stage === 'learn') {
-        const unconfirmedToday = todayDrawnCards.filter(
-          (c) => !dailyPlan.stage1ConfirmedIds.includes(c.id)
-        );
-        const queue =
-          unconfirmedToday.length > 0
-            ? unconfirmedToday
-            : todayDrawnCards.length > 0
-            ? todayDrawnCards
-            : cards.slice(0, dailyPlan.dailyCount);
+        // 没背完的词不会被推进复习，第二天继续留在初学里，和当天的新词一起累加
+        const queue = cards.filter((card) => card.stage === 0 && !card.lastReviewedAt);
         if (queue.length > 0) {
           setActiveSession({ stage: 'learn', queue });
         }
@@ -435,6 +428,11 @@ export function VocabGardenView({
   const stage1ConfirmedTodayCount = useMemo(
     () => dailyPlan.stage1ConfirmedIds.filter((id) => todayIdSet.has(id)).length,
     [dailyPlan.stage1ConfirmedIds, todayIdSet]
+  );
+
+  const pendingLearnCount = useMemo(
+    () => cards.filter((card) => card.stage === 0 && !card.lastReviewedAt).length,
+    [cards]
   );
 
   const stage3PassedTodayCount = useMemo(
@@ -696,7 +694,7 @@ export function VocabGardenView({
               >
                 初学
                 <span className="block text-[10px] font-normal text-slate-500 tabular-nums">
-                  {stage1ConfirmedTodayCount}/{todayDrawnCards.length || dailyPlan.dailyCount}
+                  {pendingLearnCount}
                 </span>
               </button>
               <button
